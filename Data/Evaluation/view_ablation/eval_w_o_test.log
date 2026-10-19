@@ -1,0 +1,14 @@
+===== wo_test  ckpt=m2_abl_no_test  weights=1.0/0.0/0.5 =====
+19:50:43 [INFO] Device: cuda
+19:50:43 [INFO] use_projection: True
+19:50:46 [INFO] Loaded encoder from checkpoints/m2_abl_no_test/best.pt
+19:50:46 [INFO] === Experiment 2: Retrieval ===
+19:50:46 [INFO] Test instances: 229
+19:50:46 [INFO] Tier-3 lookup: 743 instances with scope-creep hunks
+19:50:46 [INFO] Building repo-level distractor pool (test split only) …
+19:50:46 [INFO] Repo pool: 11 repos, 862 total hunks
+19:54:10 [INFO] T1-Recall(K=gold)  mean=0.7366  std=0.3398  n=43  (top-K = |T1∪T2|)
+19:54:10 [INFO] nDCG@k_gold  mean=0.7838  std=0.3168  n=82  (k = |T1∪T2| per instance)
+19:54:10 [INFO] T2-Recall(K=gold)  mean=0.7814  std=0.3277  n=47  (top-K = |T1∪T2|)
+19:54:10 [INFO] Perfect-Sep  mean=0.8659  n=82  (all T3 ranked after all gold)
+Done Mon Oct 12 19:54:11 CEST 2026

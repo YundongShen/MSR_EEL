@@ -1,0 +1,25 @@
+===== exp4_ldo (Django omitted from training) =====
+12:48:58 [INFO] Device: cuda
+12:48:58 [INFO] use_projection: True
+12:49:03 [INFO] Loaded encoder from /workspace/eel/old_v1/checkpoints/exp4_ldo/best.pt
+12:49:03 [INFO] === Experiment 2: Retrieval ===
+12:49:04 [INFO] Test instances: 849
+12:49:04 [INFO] Tier-3 lookup: 743 instances with scope-creep hunks
+12:49:04 [INFO] Building repo-level distractor pool (test split only) …
+12:49:04 [INFO] Repo pool: 1 repos, 2530 total hunks
+13:15:44 [INFO] nDCG@k_gold  mean=0.8713  std=0.2118  n=204  (k = |T1∪T2| per instance)
+13:15:44 [INFO] T2-Recall(K=gold)  mean=0.8551  std=0.2166  n=204  (top-K = |T1∪T2|)
+13:15:44 [INFO] Perfect-Sep  mean=0.8971  n=204  (all T3 ranked after all gold)
+===== M2 (same Django issues) =====
+13:15:55 [INFO] Device: cuda
+13:15:55 [INFO] use_projection: True
+13:15:58 [INFO] Loaded encoder from checkpoints/m2/best.pt
+13:15:58 [INFO] === Experiment 2: Retrieval ===
+13:15:58 [INFO] Test instances: 849
+13:15:58 [INFO] Tier-3 lookup: 743 instances with scope-creep hunks
+13:15:58 [INFO] Building repo-level distractor pool (test split only) …
+13:15:59 [INFO] Repo pool: 1 repos, 2530 total hunks
+13:42:40 [INFO] nDCG@k_gold  mean=0.8912  std=0.2180  n=204  (k = |T1∪T2| per instance)
+13:42:40 [INFO] T2-Recall(K=gold)  mean=0.8758  std=0.2263  n=204  (top-K = |T1∪T2|)
+13:42:40 [INFO] Perfect-Sep  mean=0.8873  n=204  (all T3 ranked after all gold)
+Done Tue Oct 13 13:42:41 CEST 2026

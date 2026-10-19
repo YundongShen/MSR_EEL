@@ -1,0 +1,20 @@
+# Supported reproduction environment: Python 3.11 or 3.12.
+# setup_env.sh installs torch from the CUDA 12.1 wheel index on Linux.
+torch==2.5.1
+transformers==4.47.0
+tokenizers==0.21.4
+safetensors==0.8.0
+huggingface_hub==0.36.2
+accelerate==1.15.0
+numpy==1.26.4
+scipy==1.17.1
+tqdm==4.70.1
+pyyaml==6.0.3
+rank-bm25==0.2.2
+anthropic==0.100.0
+datasets==3.2.0
+scikit-learn==1.6.1
+umap-learn==0.5.7
+matplotlib==3.9.4
+google-genai==1.0.0
+openai==1.59.9

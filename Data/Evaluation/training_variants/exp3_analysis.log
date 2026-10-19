@@ -1,0 +1,31 @@
+11:10:13 [INFO] Device: cuda
+11:10:14 [INFO] Test instances: 229
+11:10:14 [INFO] Tier3 lookup: 743 instances with scope-creep hunks
+11:10:14 [INFO] Loading M1 encoder...
+11:10:19 [INFO] Loaded checkpoint: checkpoints/m1/best.pt
+11:10:19 [INFO] Loading M2 encoder...
+11:10:22 [INFO] Loaded checkpoint: /workspace/eel/checkpoints_submit/m2_new_1cdf6f2/best.pt
+11:10:22 [INFO] Loading M0 (untrained) encoder for stratification...
+11:10:23 [INFO] No checkpoint path — M0 (untrained backbone, no projection)
+11:10:23 [INFO] === Analysis A: Stratified Evaluation ===
+11:10:25 [INFO] T3-REQ sim (M0): median=0.4915  min=0.1725  max=0.7613  n=82
+11:10:25 [INFO] Hard group (T3≥median): 41  |  Easy group (T3<median): 41
+11:10:25 [INFO] Evaluating m1 / hard (41 instances)...
+11:10:32 [INFO]   hard/m1: nDCG=0.5477  T2-Recall=0.6968  PSR=0.1707  n=41
+11:10:32 [INFO] Evaluating m2 / hard (41 instances)...
+11:10:38 [INFO]   hard/m2: nDCG=0.9833  T2-Recall=0.9889  PSR=0.9268  n=41
+11:10:38 [INFO] Evaluating m1 / easy (41 instances)...
+11:10:50 [INFO]   easy/m1: nDCG=0.6700  T2-Recall=0.7198  PSR=0.2683  n=41
+11:10:50 [INFO] Evaluating m2 / easy (41 instances)...
+11:11:02 [INFO]   easy/m2: nDCG=0.9638  T2-Recall=0.9572  PSR=0.8293  n=41
+11:11:02 [INFO]   Δ(M2-M1) hard: nDCG=0.4356  T2-Recall=0.2921  PSR=0.7561
+11:11:02 [INFO]   Δ(M2-M1) easy: nDCG=0.2938  T2-Recall=0.2374  PSR=0.5610
+11:11:02 [INFO] Hard Δ=0.2921  Easy Δ=0.2374
+11:11:02 [INFO] === Analysis B: ORIG Signal Alignment ===
+11:11:57 [INFO] m1 ORIG-sim: gold n=714 mean=0.8970 std=0.0806 | t3 n=134 mean=0.8637 std=0.0902
+11:11:57 [INFO] m1 Mann-Whitney U [gold>t3]: U=60104  p=1.2125e-06  r=0.2564  ***
+11:11:57 [INFO] m2 ORIG-sim: gold n=714 mean=0.8791 std=0.1161 | t3 n=134 mean=0.1677 std=0.1933
+11:11:57 [INFO] m2 Mann-Whitney U [gold>t3]: U=94641  p=1.1904e-72  r=0.9784  ***
+11:11:57 [INFO] Δr=0.7220  Δmean_gap=0.6781
+11:11:57 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/exp3_analysis_1cdf6f2_m2new.json
+Done Fri Oct 16 11:11:59 CEST 2026

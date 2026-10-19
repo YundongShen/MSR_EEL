@@ -1,0 +1,10 @@
+{
+  "model": "microsoft/unixcoder-base",
+  "n_instances": 82,
+  "ndcg_k": 0.3230918785727599,
+  "t2_recall": 0.3402397838568051,
+  "t1_recall": 0.3373326286116983,
+  "n_t1_recall": 43,
+  "n_t2_recall": 47,
+  "perfect_sep": 0.2804878048780488
+}

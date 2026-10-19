@@ -1,0 +1,42 @@
+{
+  "m0": {
+    "per_issue_file": "per_issue_m0.json",
+    "n_instances": 82,
+    "n_t1_instances": 43,
+    "n_t2_instances": 47,
+    "ndcg_k": 0.5664818149901055,
+    "t1_recall": 0.42390013087687506,
+    "t2_recall": 0.7018912529550827,
+    "psr": 0.2804878048780488
+  },
+  "m1": {
+    "per_issue_file": "per_issue_m1.json",
+    "n_instances": 82,
+    "n_t1_instances": 43,
+    "n_t2_instances": 47,
+    "ndcg_k": 0.5401329597395569,
+    "t1_recall": 0.49002315513943423,
+    "t2_recall": 0.5950861195542047,
+    "psr": 0.21951219512195122
+  },
+  "m2": {
+    "per_issue_file": "per_issue_m2.json",
+    "n_instances": 82,
+    "n_t1_instances": 43,
+    "n_t2_instances": 47,
+    "ndcg_k": 0.80658759579116,
+    "t1_recall": 0.7621992348736535,
+    "t2_recall": 0.7961752786220871,
+    "psr": 0.8780487804878049
+  },
+  "m3": {
+    "per_issue_file": "per_issue_m3.json",
+    "n_instances": 82,
+    "n_t1_instances": 43,
+    "n_t2_instances": 47,
+    "ndcg_k": 0.7813252429180502,
+    "t1_recall": 0.7181793013188361,
+    "t2_recall": 0.7984549138804456,
+    "psr": 0.8048780487804879
+  }
+}

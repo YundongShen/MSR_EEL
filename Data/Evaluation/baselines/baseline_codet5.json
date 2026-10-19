@@ -1,0 +1,10 @@
+{
+  "model": "Salesforce/codet5p-110m-embedding",
+  "n_instances": 82,
+  "ndcg_k": 0.4003906180558316,
+  "t2_recall": 0.40984464707868973,
+  "t1_recall": 0.41221056075707235,
+  "n_t1_recall": 43,
+  "n_t2_recall": 47,
+  "perfect_sep": 0.25609756097560976
+}

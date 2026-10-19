@@ -1,0 +1,5 @@
+Pair	n	Mean	Median	IQR
+A: Retained LLM hunk vs. matched reference hunk	9223	0.770	0.857	0.673 to 0.949
+B: T3 hunk vs. same-file or nearest-path reference hunk	1257	0.357	0.325	0.183 to 0.496
+Difference (A-B)		+0.413	+0.532
+Control: Random unrelated reference hunk	9223	0.144	0.134

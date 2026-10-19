@@ -1,0 +1,18 @@
+===== TRAIN cross-encoder (new_with_cross, cross negatives 3) Thu Oct 15 21:55:28 CEST 2026 =====
+21:55:41 [INFO] training data: /workspace/eel/generalization_rebuild/ft_noformat/instances_all_1cdf6f2_oldschema.jsonl | /workspace/eel/generalization_rebuild/submit_1cdf6f2/tier3_hunks.jsonl
+21:55:44 [INFO] train issues 1833 (with Tier-3 581), val groups 786, cross negatives 3
+Some weights of RobertaForSequenceClassification were not initialized from the model checkpoint at microsoft/unixcoder-base and are newly initialized: ['classifier.dense.bias', 'classifier.dense.weight', 'classifier.out_proj.bias', 'classifier.out_proj.weight']
+21:55:47 [INFO] train groups per epoch 7573, optimizer steps 2841
+21:57:01 [INFO] epoch 1  group 2000/7573  loss 1.4825
+21:58:15 [INFO] epoch 1  group 4000/7573  loss 1.0959
+21:59:28 [INFO] epoch 1  group 6000/7573  loss 0.9105
+22:00:39 [INFO] Epoch 1 — train_loss=0.8153  val_loss=0.7000
+22:00:39 [INFO] saved best (epoch 1) → /workspace/eel/checkpoints_submit/ce_trained/new_with_cross
+22:01:53 [INFO] epoch 2  group 2000/7573  loss 0.3358
+22:03:07 [INFO] epoch 2  group 4000/7573  loss 0.3295
+22:04:21 [INFO] epoch 2  group 6000/7573  loss 0.3197
+22:05:31 [INFO] Epoch 2 — train_loss=0.3166  val_loss=0.7743
+22:06:45 [INFO] epoch 3  group 2000/7573  loss 0.2227
+22:07:59 [INFO] epoch 3  group 4000/7573  loss 0.2046
+22:09:11 [INFO] epoch 3  group 6000/7573  loss 0.2016
+22:10:19 [INFO] Epoch 3 — train_loss=0.1956  val_loss=0.9485

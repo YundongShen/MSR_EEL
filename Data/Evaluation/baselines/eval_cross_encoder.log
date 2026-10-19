@@ -1,0 +1,11 @@
+===== EVAL on the 1cdf6f2 test set, with T0 Thu Oct 15 22:10:20 CEST 2026 =====
+22:10:27 [INFO] Mode: cross_encoder  Model: /workspace/eel/checkpoints_submit/ce_trained/new_with_cross
+22:10:27 [INFO] Loading cross-encoder: /workspace/eel/checkpoints_submit/ce_trained/new_with_cross
+22:10:29 [INFO] Test instances: 229
+22:10:29 [INFO] Tier-3 lookup: 743 instances
+22:10:58 [INFO] === /workspace/eel/checkpoints_submit/ce_trained/new_with_cross ===
+22:10:58 [INFO]   nDCG@k_gold  mean=0.6909  n=82
+22:10:58 [INFO]   T2-Recall    mean=0.6945  n=47
+22:10:58 [INFO]   Perfect-Sep  mean=0.8171  n=82
+22:10:58 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/ce_trained_new_with_cross.json
+Done Thu Oct 15 22:10:58 CEST 2026

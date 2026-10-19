@@ -1,0 +1,99 @@
+\paragraph{R1 --- Requirement and Test Aligned \textnormal{($s_r>\tau_r$, $s_t>\tau_t$)}}
+
+R1 contains hunks with high similarity to both the requirement and failing tests.
+
+\smallskip
+\noindent\textit{Requirement (django\#10904):}
+Replace all \texttt{OSError} aliases, including \texttt{IOError}, \texttt{EnvironmentError}, and \texttt{WindowsError}, with the canonical \texttt{OSError} following their unification in Python~3.3.
+
+\begin{lstlisting}
+# django/contrib/staticfiles/storage.py (hashed_name)
+- except IOError:
++ except OSError:
+\end{lstlisting}
+
+\noindent
+$s_r=0.83$, $s_t=0.78$, and $s_o=0.87$.
+
+The hunk replaces \texttt{IOError} with \texttt{OSError}, as requested.
+
+\paragraph{R2 --- Requirement and Structure Aligned \textnormal{($s_r>\tau_r$, $s_o>\tau_o$)}}
+
+R2 contains hunks with high REQ and ORIG similarity and low TEST similarity.
+
+\smallskip
+\noindent\textit{Requirement (django\#10924):}
+\texttt{FilePathField} should accept a callable for its \texttt{path} argument, so that the file location can be resolved on each machine.
+
+\begin{lstlisting}
+# django/db/models/fields/__init__.py (FilePathField.formfield)
+- 'path': self.path,
++ 'path': self._get_path(),
+\end{lstlisting}
+
+\noindent
+$s_r=0.87$, $s_t=0.00$, and $s_o=0.98$.
+
+The hunk replaces direct access to \texttt{self.path} with a call to \texttt{self.\_get\_path()}. Both REQ and ORIG similarities exceed their thresholds.
+
+\paragraph{R3 --- Requirement-Oriented \textnormal{($s_r>\tau_r$)}}
+
+R3 contains hunks whose REQ score exceeds its threshold while the TEST and ORIG scores do not.
+
+\smallskip
+\noindent\textit{Requirement (django\#10301):}
+SQLite database functions such as \texttt{Power} and \texttt{Sqrt} raise an \texttt{OperationalError} when called on \texttt{NULL} values.
+
+\begin{lstlisting}
+# django/db/backends/sqlite3/base.py
+ import decimal
++from functools import wraps  # ensure no None passes
+ import math
+\end{lstlisting}
+
+\noindent
+$s_r=0.79$, $s_t=0.38$, and $s_o=0.00$.
+
+The hunk adds an import of \texttt{wraps}. REQ is the only similarity component above its threshold.
+
+\paragraph{R4 --- Structure-Oriented \textnormal{($s_o>\tau_o$)}}
+
+R4 contains hunks with high ORIG similarity and low REQ similarity.
+
+\smallskip
+\noindent\textit{Requirement (django\#10853):}
+SQLite versions before 3.25.0 do not support window functions, so Django should check the SQLite version instead of failing with an \texttt{OperationalError}.
+
+\begin{lstlisting}
+# django/db/backends/oracle/features.py (DatabaseFeatures)
+     supports_callproc_kwargs = True
+-    supports_over_clause = True
++    supports_over_clause_val = True
+     supports_ignore_conflicts = False
+\end{lstlisting}
+
+\noindent
+$s_r=0.53$, $s_t=0.00$, and $s_o=0.87$.
+
+The hunk renames an Oracle backend feature flag and has high ORIG similarity.
+
+\paragraph{R5 --- Weakly Aligned}
+
+R5 contains hunks outside R1--R4 and is dominated by T3 candidates.
+
+\smallskip
+\noindent\textit{Requirement (django\#12364):}
+Admin changelist ordering detection should account for unconditional \texttt{UniqueConstraint}s when checking for a total ordering, rather than considering only \texttt{unique\_together} fields.
+
+\begin{lstlisting}
+# django/contrib/admin/views/main.py [T3]
+             for field in ordering:
+-                if isinstance(field, (Combinable, OrderBy)):
++                if isinstance(field, (OrderBy, Combinable)):
+                     if not isinstance(field, OrderBy):
+\end{lstlisting}
+
+\noindent
+$s_r=-0.19$, $s_t=-0.12$, and $s_o=-0.06$.
+
+The hunk reorders two types in an \texttt{isinstance} check. All three similarity scores are below their respective thresholds.

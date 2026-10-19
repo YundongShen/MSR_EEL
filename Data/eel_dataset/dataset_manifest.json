@@ -1,0 +1,153 @@
+{
+  "protocol": "T1/T2 = LLM-generated hunks matched to reference-patch hunks (same file, start line within 20 lines of the gold hunk), T1 if the file is statically linked to a fail-to-pass test, else T2; T3 = Haiku-generated hunks starting >= 20 lines from every gold hunk in the same file (or in another file)",
+  "generator": "claude-haiku-4-5-20251001, temperature 0.7, max_tokens 4096",
+  "total": {
+    "instances": 2291,
+    "train": 1833,
+    "val": 229,
+    "test": 229,
+    "gold_hunks": 9223,
+    "T1": 3354,
+    "T2": 5869,
+    "T3_hunks": 1257,
+    "T3_instances": 743
+  },
+  "per_repo": {
+    "flask": {
+      "instances": 11,
+      "train": 9,
+      "val": 1,
+      "test": 1,
+      "gold_hunks": 57,
+      "T1": 0,
+      "T2": 57,
+      "T3_hunks": 4,
+      "T3_instances": 3
+    },
+    "seaborn": {
+      "instances": 22,
+      "train": 20,
+      "val": 2,
+      "test": 0,
+      "gold_hunks": 73,
+      "T1": 31,
+      "T2": 42,
+      "T3_hunks": 18,
+      "T3_instances": 8
+    },
+    "requests": {
+      "instances": 44,
+      "train": 34,
+      "val": 5,
+      "test": 5,
+      "gold_hunks": 141,
+      "T1": 0,
+      "T2": 141,
+      "T3_hunks": 20,
+      "T3_instances": 16
+    },
+    "pylint": {
+      "instances": 57,
+      "train": 48,
+      "val": 2,
+      "test": 7,
+      "gold_hunks": 222,
+      "T1": 0,
+      "T2": 222,
+      "T3_hunks": 56,
+      "T3_instances": 23
+    },
+    "astropy": {
+      "instances": 95,
+      "train": 74,
+      "val": 12,
+      "test": 9,
+      "gold_hunks": 369,
+      "T1": 296,
+      "T2": 73,
+      "T3_hunks": 51,
+      "T3_instances": 38
+    },
+    "xarray": {
+      "instances": 110,
+      "train": 87,
+      "val": 14,
+      "test": 9,
+      "gold_hunks": 887,
+      "T1": 6,
+      "T2": 881,
+      "T3_hunks": 91,
+      "T3_instances": 45
+    },
+    "pytest": {
+      "instances": 119,
+      "train": 94,
+      "val": 14,
+      "test": 11,
+      "gold_hunks": 336,
+      "T1": 0,
+      "T2": 336,
+      "T3_hunks": 43,
+      "T3_instances": 31
+    },
+    "matplotlib": {
+      "instances": 183,
+      "train": 153,
+      "val": 13,
+      "test": 17,
+      "gold_hunks": 743,
+      "T1": 486,
+      "T2": 257,
+      "T3_hunks": 103,
+      "T3_instances": 69
+    },
+    "sphinx": {
+      "instances": 187,
+      "train": 151,
+      "val": 19,
+      "test": 17,
+      "gold_hunks": 757,
+      "T1": 0,
+      "T2": 757,
+      "T3_hunks": 136,
+      "T3_instances": 73
+    },
+    "scikit-learn": {
+      "instances": 229,
+      "train": 181,
+      "val": 23,
+      "test": 25,
+      "gold_hunks": 1216,
+      "T1": 1093,
+      "T2": 123,
+      "T3_hunks": 130,
+      "T3_instances": 74
+    },
+    "sympy": {
+      "instances": 385,
+      "train": 301,
+      "val": 37,
+      "test": 47,
+      "gold_hunks": 1892,
+      "T1": 1442,
+      "T2": 450,
+      "T3_hunks": 278,
+      "T3_instances": 159
+    },
+    "django": {
+      "instances": 849,
+      "train": 681,
+      "val": 87,
+      "test": 81,
+      "gold_hunks": 2530,
+      "T1": 0,
+      "T2": 2530,
+      "T3_hunks": 327,
+      "T3_instances": 204
+    }
+  },
+  "eval": {
+    "test_eval_instances": 82,
+    "test_t2_recall_instances": 47
+  }
+}

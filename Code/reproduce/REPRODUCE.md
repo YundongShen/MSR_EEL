@@ -1,6 +1,6 @@
 # Reproduction
 
-Commands below run from the `Code` directory of `MSR_EEL_SUBMIT` and use the
+Commands below run from the replication package's `Code` directory and use the
 published data in the adjacent `Data` directory.
 
 ## Environment and data
@@ -221,7 +221,7 @@ generation output. Samples are batched until the number of matched generated
 hunks reaches the reference-hunk count. Duplicate hunks are removed; later
 samples are merged into the issue record. If matches exceed that count, the
 matches with the smallest start-line distances to reference hunks in the same
-file are retained. Reusing a run ID resumes the corresponding sampling round.
+file are retained. Sampling resumes from the saved issue records.
 
 ```bash
 python data_pipeline/sample_haiku_merge.py --input data/raw/swebench_full_instances.jsonl.gz --generations data/cache/new_haiku_generations.jsonl.gz --model claude-haiku-4-5-20251001 --temperature 0.7 --max-tokens 4096 --samples 1 --run-id new-sampling --dry-run
@@ -270,31 +270,3 @@ For GPU submission, replace the embedding command with
 Evaluation commands write outputs to `logs/`. Training saves the checkpoint
 with the lowest validation loss to `checkpoints/<variant>/best.pt`. Submitted
 training logs and evaluation results are stored under `Data/Evaluation/`.
-
-## Historical versions
-
-### M4
-
-M4 uses the M3 configuration with T1/T2 loss weights 1.0/0.67.
-
-```bash
-python train.py --instances data/processed/instances_full.jsonl --epochs 10 --checkpoint-dir checkpoints/m4 --pair-types req_test req_hunk orig_hunk req_orig --tier3 data/cache/tier3_hunks.jsonl --same-repo --tier-aware-loss
-python evaluate.py --checkpoint checkpoints/m4/best.pt --exp retrieval "${A[@]}" "${W[@]}"
-```
-
-### Pooler-based Retrieval
-
-Pooler-based Retrieval uses GraphCodeBERT's randomly initialized pooler without
-task-specific training. The `coderetriever` CLI mode selects this pooler
-configuration; the result JSON records the GraphCodeBERT model ID.
-
-```bash
-python baselines/baselines_extra.py --mode coderetriever --model microsoft/graphcodebert-base "${A[@]}" --output logs/baseline_pooler_retrieval.json
-```
-
-### Django-omitted comparison
-
-The Django-omitted comparison is a historical version of the repository-shift
-experiment. Its records are stored under
-`Data/Evaluation/generalization/eval_logs/django_omitted.log` and
-`Data/Evaluation/generalization/scores/per_issue_django_omitted.json`.

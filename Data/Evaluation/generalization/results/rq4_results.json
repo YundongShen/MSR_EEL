@@ -135,23 +135,5 @@
         "psr": "0.682"
       }
     }
-  ],
-  "additional_results": [
-    {
-      "experiment": "django_omitted",
-      "n_instances": 204,
-      "n_t1_hunks": 0,
-      "n_t2_hunks": 1092,
-      "n_t3_hunks": 327,
-      "n_t0_hunks": 10200,
-      "ndcg_k": 0.8713342397673911,
-      "t1_recall": null,
-      "t2_recall": 0.8550507990591434,
-      "psr": 0.8970588235294118,
-      "table_values": {
-        "ndcg_k": "0.871",
-        "psr": "0.897"
-      }
-    }
   ]
 }

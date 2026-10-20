@@ -7,8 +7,8 @@ Trains a single EntailmentEncoder on four positive pair types:
     req_orig  — (REQ, ORIG)
 
 Each batch contains pairs from all active pair types.  The InfoNCE loss
-treats in-batch cross-index combinations as negatives; no explicit negative
-construction is needed.
+uses in-batch negatives. M2 adds same-issue Tier-3 hard negatives; M3 additionally
+samples hard negatives from other issues in the same repository.
 
 Usage:
     python train.py

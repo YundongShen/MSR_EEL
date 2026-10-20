@@ -9,10 +9,9 @@ emits flat EntailmentPair objects representing the four positive pair types:
   orig_hunk — (ORIG, HUNK) original code unit ↔ hunk that edits it
   req_orig  — (REQ, ORIG)  requirement ↔ source unit in a file the retained hunks modify
 
-Negatives are handled implicitly by InfoNCE in-batch sampling; no explicit
-negative construction is needed here.  Tier labels (1 / 2) come from the retained-hunk
-records and are carried in each pair for weighted evaluation.  Tier-3 hunks are not
-pairs; train.py injects them as extra negatives.
+This dataset constructs positive pairs and carries their Tier-1/2 labels.
+InfoNCE uses in-batch negatives; train.py supplies same-issue Tier-3 and
+same-repository cross-issue hard negatives when configured.
 
 An instance without a retained hunk contributes no hunk pairs.
 """

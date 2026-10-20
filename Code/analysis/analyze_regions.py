@@ -1,15 +1,16 @@
 """Region analysis: trace UMAP points back to hunks, classify edit types per region.
 
-Proximity thresholds (derived from M2 similarity distributions):
+Similarity thresholds:
   high_req  : sim_req  > 0.65
   high_test : sim_test > 0.40
   high_orig : sim_orig > 0.80
 
-Four primary regions analysed:
-  R1 (REQ+TEST)       : high_req + high_test           → core changes, behaviorally tested
-  R2 (REQ only)       : high_req + ~high_test          → req-driven, test-invisible
-  R3 (ORIG only)      : ~high_req + ~high_test + high_orig → structurally necessary (our focus)
-  R4 (none)           : ~high_req + ~high_test + ~high_orig → low-necessity / scope creep
+Five regions:
+  R1 (REQ, TEST)      : high_req and high_test
+  R2 (REQ, ORIG)      : high_req and not high_test and high_orig
+  R3 (REQ-only)       : high_req and not high_test and not high_orig
+  R4 (ORIG-only)      : not high_req and high_orig
+  R5 (Low Similarity) : remaining hunks
 
 Usage:
     python analysis/analyze_regions.py --model claude-haiku-4-5-20251001 --n-sample 30

@@ -100,12 +100,12 @@ class EvalConfig:
 
 @dataclass
 class LLMConfig:
-    """Config for the LLM-based unconstrained patch generation pipeline."""
-    provider: str = "openai"
-    model: str = "Qwen2.5-Coder-32B-Instruct"
+    """Configuration for candidate patch generation."""
+    provider: str = "anthropic"
+    model: str = "claude-haiku-4-5-20251001"
     api_base: str | None = None
     max_tokens: int = 4096
-    temperature: float = 0.2
+    temperature: float = 0.7
 
 
 @dataclass

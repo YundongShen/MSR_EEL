@@ -1,4 +1,4 @@
-"""Thin LLM client wrapper (OpenAI-compatible API)."""
+"""LLM client wrapper for Anthropic and OpenAI-compatible APIs."""
 
 from __future__ import annotations
 
@@ -9,14 +9,14 @@ log = logging.getLogger(__name__)
 
 
 class LLMClient:
-    """Thin wrapper over the OpenAI client (or a mock for offline testing).
+    """Wrapper over Anthropic and OpenAI-compatible clients.
 
     Parameters
     ----------
     provider:
-        ``"openai"`` (default) or ``"mock"`` for unit tests.
+        ``"anthropic"`` (default), ``"openai"``, or ``"mock"`` for unit tests.
     model:
-        Model name, e.g. ``"gpt-4o"`` or ``"Qwen/Qwen2.5-Coder-32B-Instruct"``.
+        Model name, defaulting to ``"claude-haiku-4-5-20251001"``.
     api_base:
         Override base URL (for local vLLM servers).
     max_tokens:
@@ -31,11 +31,11 @@ class LLMClient:
 
     def __init__(
         self,
-        provider: str = "openai",
-        model: str = "gpt-4o",
+        provider: str = "anthropic",
+        model: str = "claude-haiku-4-5-20251001",
         api_base: str | None = None,
-        max_tokens: int = 2048,
-        temperature: float = 0.2,
+        max_tokens: int = 4096,
+        temperature: float = 0.7,
         max_retries: int = 3,
         retry_delay: float = 2.0,
     ) -> None:

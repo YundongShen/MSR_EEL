@@ -1,6 +1,5 @@
 19:35:11 [INFO] Device: cuda
 19:35:11 [INFO] use_projection: False
-19:35:13 [WARNING] Checkpoint none not found — evaluating with random weights.
 19:35:13 [INFO] === Experiment 2: Retrieval ===
 19:35:13 [INFO] Test instances: 229
 19:35:13 [INFO] Tier-3 lookup: 743 instances with scope-creep hunks

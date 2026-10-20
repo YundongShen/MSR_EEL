@@ -48,6 +48,7 @@ if ! curl -s "http://localhost:${PORT}/health" > /dev/null 2>&1; then
 fi
 
 echo "Generating candidate patches with $MODEL ..."
+# Prompt and labeling code are shared; context and output budgets are model-specific.
 python data_pipeline/generate_candidates.py \
     --input       data/raw/swebench_full_instances.jsonl \
     --generations      data/cache/deepseek_generations.jsonl \

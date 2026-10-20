@@ -612,7 +612,6 @@ def retrieval_candidates(
         log.info("Tier-3 lookup: %d instances with scope-creep hunks", len(tier3_lookup))
 
     # Build repo-level distractor pool: same repo, different instance, retained hunks → tier 0
-    # (same source as the T1/T2 candidates, so distractors are not distinguishable by diff format).
     # The pool comes from the instances of the evaluated split only: no leakage from training data.
     # Each distractor keeps the ORIG unit(s) of the instance it comes from: like every candidate it is scored
     # against the original code it modifies (o(h) in the paper), not against the evaluated issue's files.

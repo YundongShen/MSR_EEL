@@ -1,10 +1,7 @@
-"""Regression checks for parse_instances: the fail-to-pass test code comes from the test files AFTER the test patch.
+"""Checks for instance parsing and fail-to-pass test extraction.
 
 Run from the project root (no GPU, no model):
-    gpu_env312/bin/python tests/check_instances.py
-
-Most fail-to-pass tests are added by the SWE-bench test patch, so they do not exist in the base commit.  Reading
-them from the base test files left the TEST view empty for 55% of the issues.
+    python tests/check_instances.py
 """
 
 from __future__ import annotations
@@ -55,7 +52,6 @@ def check_added_and_modified_tests() -> None:
     assert "ADDED_MARKER" in tf["test_added_fn"], "a test in a file added by the patch was not extracted"
     assert "2, 2" in tf["test_old"] and "1, 1" not in tf["test_old"], "a modified test must be the post-patch version"
 
-    # before the fix: base files only -> the two new tests are missing and test_old is the stale version
     base_only = {t["function_name"]: t["code"] for t in pi._extract_test_functions({"tests/test_x.py": BASE_X}, inst["fail_to_pass"])}
     assert set(base_only) == {"test_old"} and "1, 1" in base_only["test_old"]
 

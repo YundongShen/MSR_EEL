@@ -1,14 +1,8 @@
-"""Regression checks for the training objective and model selection.
+"""Checks for the training objective and model selection.
 
 Run from the project root (CPU only, no model download):
     CUDA_VISIBLE_DEVICES="" python tests/check_training_objective.py
 
-  1. InfoNCE with a hard-negative mask equals the hand-computed loss over in-batch ∪ OWN hard negatives,
-     and differs from the shared-pool loss (the old behaviour: every anchor saw every anchor's Tier-3 hunks)
-  2. train._train_step builds the mask so that anchor i is masked to the Tier-3 hunks of ITS instance
-     (and the same-repo hunks sampled for it), and nothing leaks between anchors / instances
-  3. train.validate uses the variant's hard negatives (validation loss measures what the variant learns)
-  4. M3 = M2 + same-repo negatives; M4 = M3 + tier weighting
 """
 
 from __future__ import annotations
@@ -60,7 +54,7 @@ def check_masked_infonce() -> None:
     got = nce(a, b, hard, None, mask).item()
     assert math.isclose(got, expected, rel_tol=1e-5, abs_tol=1e-6), (got, expected)
 
-    shared = nce(a, b, hard, None, None).item()                  # old behaviour: whole pool for every anchor
+    shared = nce(a, b, hard, None, None).item()
     assert not math.isclose(got, shared, rel_tol=1e-4), "mask had no effect"
     all_true = nce(a, b, hard, None, torch.ones(B, H, dtype=torch.bool)).item()
     assert math.isclose(all_true, shared, rel_tol=1e-6), "all-True mask must equal the shared pool"

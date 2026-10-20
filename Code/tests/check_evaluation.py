@@ -1,13 +1,7 @@
-"""Regression checks for the evaluation protocol.
+"""Checks for candidate scoring and evaluation weights.
 
 Run from the project root (CPU only, no model download):
-    CUDA_VISIBLE_DEVICES="" gpu_env312/bin/python tests/check_evaluation.py
-
-  1. a T0 distractor is scored against the ORIG unit of ITS OWN instance (not against the evaluated issue's
-     files, which always gave it ORIG = 0 and let the ORIG view separate T0 by file membership)
-  2. scoring a grid of (alpha, beta, gamma) from one encoding gives the same metrics as running each triple alone
-  3. the selected weights are stored per checkpoint, are applied on later runs, are not applied to another
-     checkpoint, and explicit --score-* flags win (ablations)
+    CUDA_VISIBLE_DEVICES="" python tests/check_evaluation.py
 """
 
 from __future__ import annotations

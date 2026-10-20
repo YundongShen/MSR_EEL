@@ -1,7 +1,7 @@
 """Checks for candidate loading, input validation, and checkpoint metadata.
 
 Run from the project root (no pytest needed, CPU only):
-    CUDA_VISIBLE_DEVICES="" gpu_env312/bin/python tests/check_hunk_source.py
+    CUDA_VISIBLE_DEVICES="" python tests/check_hunk_source.py
 
 Checks cover candidate-file isolation, required fields, checkpoint metadata,
 content fingerprints, and available runtime candidate files.
@@ -28,7 +28,7 @@ from data.provenance import (                                                   
 from data.retained_hunks import load_retained_hunks, load_tier3_hunks                   # noqa: E402
 
 GOLD, GEN = "GOLD_SENTINEL", "GEN_SENTINEL"
-_SKIP_DIRS = {"old_v1", "archive_old", "recovered_from_mac", "gpu_env312", "__pycache__", ".git", "tests", "paper"}
+_SKIP_DIRS = {"__pycache__", ".git", "tests", "paper"}
 
 
 def gen_hunk(text: str = GEN, tier: int = 1, **kw) -> dict:

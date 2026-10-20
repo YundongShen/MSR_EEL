@@ -906,9 +906,7 @@ def main(
             raise SystemExit("--select-weights needs a trained checkpoint (not --no-projection)")
         select_weights(cfg, encoder, device, use_projection, repo_pool)
         return
-    source = resolve_score_weights(cfg, encoder, use_projection, explicit_weights)
-    log.info("Score weights: alpha=%.3g beta=%.3g gamma=%.3g  (%s)",
-             cfg.eval.score_alpha, cfg.eval.score_beta, cfg.eval.score_gamma, source)
+    resolve_score_weights(cfg, encoder, use_projection, explicit_weights)
 
     # Derive a short label for UMAP file naming (m0 for untrained baseline).
     if not use_projection:

@@ -473,7 +473,6 @@ def main(cfg: Config = default_config) -> None:
         tier_aware_loss=cfg.train.tier_aware_loss,
     )
     write_stamp_json(stamp, ckpt_dir)
-    log.info("Data provenance: %s", stamp)
 
     # ---- Training loop -----------------------------------------------------
     for epoch in range(start_epoch, cfg.train.epochs):

@@ -16,3 +16,5 @@ Some weights of RobertaForSequenceClassification were not initialized from the m
 22:07:59 [INFO] epoch 3  group 4000/7573  loss 0.2046
 22:09:11 [INFO] epoch 3  group 6000/7573  loss 0.2016
 22:10:19 [INFO] Epoch 3 — train_loss=0.1956  val_loss=0.9485
+Lowest val_loss: epoch 1 val_loss 0.7000
+Lowest train_loss: epoch 3 train_loss 0.1956

@@ -330,7 +330,8 @@ NVIDIA A100-SXM4-80GB, 81920 MiB
 22:46:07 [INFO] step=15650  loss=0.6568  τ=0.064  lr=1.81e-05  [req_test=0.402  req_orig=0.250  req_hunk=0.004  orig_hunk=0.002]
 22:47:17 [INFO] step=15700  loss=0.6244  τ=0.064  lr=1.81e-05  [orig_hunk=0.040  req_orig=0.013  req_hunk=0.281  req_test=0.290]
 epoch 2 saved, stopping training Tue Oct 13 22:47:49 CEST 2026
-best.pt: epoch 2 val_loss 4.7005
+Lowest val_loss: epoch 2 val_loss 4.7005
+Lowest train_loss: epoch 2 train_loss 0.5765
 ===== EVAL leave-sympy-out model on the sympy issues (1cdf6f2) =====
 22:48:05 [INFO] Device: cuda
 22:48:05 [INFO] use_projection: True

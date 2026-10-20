@@ -1277,3 +1277,5 @@
 11:06:06 [INFO] step=62400  loss=0.5701  τ=0.059  lr=1.94e-06  [req_test=0.568  req_hunk=0.002]
 11:07:14 [INFO] step=62450  loss=0.3736  τ=0.059  lr=1.93e-06  [req_test=0.272  req_hunk=0.101]
 slurmstepd: error: *** JOB 6911917 ON [redacted] CANCELLED AT 2026-07-24T11:07:41 DUE TO TIME LIMIT ***
+Lowest val_loss: epoch 1 val_loss 3.8360
+Lowest train_loss: epoch 7 train_loss 0.4400

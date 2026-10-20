@@ -1598,3 +1598,5 @@
 04:00:26 [INFO] Epoch 10 — train_loss=0.4327  val_loss=4.3619
 04:00:27 [INFO] Saved checkpoint → checkpoints/m2_abl_no_orig/epoch_010.pt  (val_loss=4.3619)
 04:00:27 [INFO] Training complete. Best val_loss=3.8722
+Lowest val_loss: epoch 1 val_loss 3.8722
+Lowest train_loss: epoch 10 train_loss 0.4327

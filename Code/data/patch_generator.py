@@ -301,9 +301,9 @@ class PatchGenerator:
         return diff.replace("path/to/file", path)
 
     def generate_controlled(self, sample: DataSample) -> str | None:
-        """Generate a minimal-change patch (used as the scope 'ruler')."""
+        """Generate a patch using the minimal-change prompt."""
         return self._generate(_CONTROLLED_SYSTEM, sample)
 
     def generate_unconstrained(self, sample: DataSample) -> str | None:
-        """Generate an unconstrained patch (candidate negative)."""
+        """Generate a patch using the general coding prompt."""
         return self._generate(_UNCONSTRAINED_SYSTEM, sample)

@@ -4,7 +4,7 @@
 15:38:02 [INFO] Test instances: 229
 15:38:02 [INFO] Tier-3 lookup: 743 instances
 15:38:28 [INFO] === microsoft/codebert-base ===
-15:38:28 [INFO]   nDCG@k_gold  mean=0.1279  n=82
+15:38:28 [INFO]   nDCG@k_retained  mean=0.1279  n=82
 15:38:28 [INFO]   T2-Recall    mean=0.1772  n=47
 15:38:28 [INFO]   Perfect-Sep  mean=0.2927  n=82
 15:38:28 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_codebert-base.json
@@ -15,7 +15,7 @@ Some weights of RobertaModel were not initialized from the model checkpoint at m
 15:38:40 [INFO] Test instances: 229
 15:38:40 [INFO] Tier-3 lookup: 743 instances
 15:39:06 [INFO] === microsoft/graphcodebert-base ===
-15:39:06 [INFO]   nDCG@k_gold  mean=0.1275  n=82
+15:39:06 [INFO]   nDCG@k_retained  mean=0.1275  n=82
 15:39:06 [INFO]   T2-Recall    mean=0.1736  n=47
 15:39:06 [INFO]   Perfect-Sep  mean=0.4024  n=82
 15:39:06 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_graphcodebert-base.json
@@ -25,7 +25,7 @@ Some weights of RobertaModel were not initialized from the model checkpoint at m
 15:39:17 [INFO] Test instances: 229
 15:39:17 [INFO] Tier-3 lookup: 743 instances
 15:39:42 [INFO] === microsoft/unixcoder-base ===
-15:39:42 [INFO]   nDCG@k_gold  mean=0.3231  n=82
+15:39:42 [INFO]   nDCG@k_retained  mean=0.3231  n=82
 15:39:42 [INFO]   T2-Recall    mean=0.3402  n=47
 15:39:42 [INFO]   Perfect-Sep  mean=0.2805  n=82
 15:39:42 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_unixcoder-base.json
@@ -35,7 +35,7 @@ Some weights of RobertaModel were not initialized from the model checkpoint at m
 15:39:53 [INFO] Test instances: 229
 15:39:53 [INFO] Tier-3 lookup: 743 instances
 15:40:22 [INFO] === Salesforce/codet5p-110m-embedding ===
-15:40:22 [INFO]   nDCG@k_gold  mean=0.4004  n=82
+15:40:22 [INFO]   nDCG@k_retained  mean=0.4004  n=82
 15:40:22 [INFO]   T2-Recall    mean=0.4098  n=47
 15:40:22 [INFO]   Perfect-Sep  mean=0.2561  n=82
 15:40:22 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_codet5.json

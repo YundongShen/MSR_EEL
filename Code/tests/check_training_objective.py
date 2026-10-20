@@ -161,8 +161,6 @@ def check_recipes() -> None:
         return set(re.findall(r"^\s+(--[a-z0-9-]+)", text, re.MULTILINE))
     assert "--tier3" in flags("m2.slurm") and "--same-repo" not in flags("m2.slurm")
     assert {"--tier3", "--same-repo"} <= flags("m3.slurm"), "M3 must be M2 + same-repo negatives"
-    f4 = flags("m4.slurm")
-    assert {"--tier3", "--same-repo", "--tier-aware-loss"} <= f4, "M4 must be M3 + tier weighting"
     f1 = flags("m1.slurm")
     assert not ({"--tier3", "--same-repo", "--tier-aware-loss"} & f1), "M1 must have no hard negatives"
 

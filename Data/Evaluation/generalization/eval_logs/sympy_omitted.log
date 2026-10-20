@@ -335,26 +335,26 @@ best.pt: epoch 2 val_loss 4.7005
 22:48:05 [INFO] Device: cuda
 22:48:05 [INFO] use_projection: True
 22:48:08 [INFO] Loaded encoder from /tmp/lso_17762225/ckpt/best.pt
-22:48:08 [INFO] === Experiment 2: Retrieval ===
+22:48:08 [INFO] === Retrieval evaluation ===
 22:48:09 [INFO] Test instances: 385
 22:48:09 [INFO] Tier-3 lookup: 743 instances with scope-creep hunks
 22:48:09 [INFO] Building repo-level distractor pool (test split only) …
 22:48:09 [INFO] Repo pool: 1 repos, 1892 total hunks
-22:56:41 [INFO] T1-Recall(K=gold)  mean=0.7696  std=0.3020  n=150  (top-K = |T1∪T2|)
-22:56:41 [INFO] nDCG@k_gold  mean=0.7927  std=0.2870  n=159  (k = |T1∪T2| per instance)
-22:56:41 [INFO] T2-Recall(K=gold)  mean=0.7988  std=0.2806  n=42  (top-K = |T1∪T2|)
+22:56:41 [INFO] T1-Recall(K=Retained-H)  mean=0.7696  std=0.3020  n=150  (top-K = |T1∪T2|)
+22:56:41 [INFO] nDCG@k_retained  mean=0.7927  std=0.2870  n=159  (k = |T1∪T2| per instance)
+22:56:41 [INFO] T2-Recall(K=Retained-H)  mean=0.7988  std=0.2806  n=42  (top-K = |T1∪T2|)
 22:56:41 [INFO] Perfect-Sep  mean=0.7736  n=159  (all T3 ranked after all gold)
 ===== EVAL M2 on the same sympy issues =====
 22:56:52 [INFO] Device: cuda
 22:56:52 [INFO] use_projection: True
 22:56:56 [INFO] Loaded encoder from checkpoints/m2/best.pt
-22:56:56 [INFO] === Experiment 2: Retrieval ===
+22:56:56 [INFO] === Retrieval evaluation ===
 22:56:56 [INFO] Test instances: 385
 22:56:56 [INFO] Tier-3 lookup: 743 instances with scope-creep hunks
 22:56:56 [INFO] Building repo-level distractor pool (test split only) …
 22:56:56 [INFO] Repo pool: 1 repos, 1892 total hunks
-23:05:28 [INFO] T1-Recall(K=gold)  mean=0.8321  std=0.2657  n=150  (top-K = |T1∪T2|)
-23:05:28 [INFO] nDCG@k_gold  mean=0.8511  std=0.2401  n=159  (k = |T1∪T2| per instance)
-23:05:28 [INFO] T2-Recall(K=gold)  mean=0.7978  std=0.2977  n=42  (top-K = |T1∪T2|)
+23:05:28 [INFO] T1-Recall(K=Retained-H)  mean=0.8321  std=0.2657  n=150  (top-K = |T1∪T2|)
+23:05:28 [INFO] nDCG@k_retained  mean=0.8511  std=0.2401  n=159  (k = |T1∪T2| per instance)
+23:05:28 [INFO] T2-Recall(K=Retained-H)  mean=0.7978  std=0.2977  n=42  (top-K = |T1∪T2|)
 23:05:28 [INFO] Perfect-Sep  mean=0.8239  n=159  (all T3 ranked after all gold)
 Done Tue Oct 13 23:05:29 CEST 2026

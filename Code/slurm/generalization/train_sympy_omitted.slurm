@@ -2,9 +2,9 @@
 #SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=48:00:00
-#SBATCH --job-name=exp4_lso
-#SBATCH --output=logs/train_exp4_lso_%j.out
-#SBATCH --error=logs/train_exp4_lso_%j.err
+#SBATCH --job-name=train_sympy_omitted
+#SBATCH --output=logs/train_sympy_omitted_%j.out
+#SBATCH --error=logs/train_sympy_omitted_%j.err
 
 set -euo pipefail
 export PYTHONHASHSEED=42

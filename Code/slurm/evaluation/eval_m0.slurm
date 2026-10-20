@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --gpus-per-node=A100fat:1
+#SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=12:00:00
 #SBATCH --job-name=eval_m0
@@ -11,20 +11,19 @@ export PYTHONHASHSEED=42
 
 PROJECT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "$PROJECT"
-module load Python/3.11.3-GCCcore-12.3.0
-source gpu_env/bin/activate
+source env/bin/activate
 
 echo "Job started: $(date)"
 echo "Node: $(hostname)"
 echo "GPU: $(nvidia-smi --query-gpu=name --format=csv,noheader)"
 
-# M0: untrained UniXCoder baseline — no checkpoint, bypass MLP projection head
 python evaluate.py \
     --checkpoint none \
+    --llm-t12 data/cache/llm_t12_hunks.jsonl \
+    --score-alpha 1.0 --score-beta 0.5 --score-gamma 0.5 \
     --instances  data/processed/instances_full.jsonl \
     --tier3      data/cache/tier3_hunks.jsonl \
-    --exp        all \
-    --umap \
+    --exp        retrieval \
     --repo-pool \
     --no-projection
 

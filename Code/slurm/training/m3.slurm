@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --gpus-per-node=A100fat:1
+#SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=7-00:00:00
 #SBATCH --job-name=m3
@@ -11,14 +11,12 @@ export PYTHONHASHSEED=42
 
 PROJECT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "$PROJECT"
-module load Python/3.11.3-GCCcore-12.3.0
-source gpu_env/bin/activate
+source env/bin/activate
 
 echo "Job started: $(date)"
 echo "Node: $(hostname)"
 echo "GPU: $(nvidia-smi --query-gpu=name --format=csv,noheader)"
 
-# M3: M2 + same-repo cross-issue hard negatives (Tier-3 and same-repo negatives together)
 python train.py \
     --instances data/processed/instances_full.jsonl \
     --encoder   microsoft/unixcoder-base \

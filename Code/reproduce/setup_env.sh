@@ -30,7 +30,7 @@ names = ("splits.json", "eval_sets.json", "llm_t12_hunks.jsonl",
          "tier3_hunks.jsonl", "dataset_manifest.json", "instances_full.jsonl.gz")
 for name in names:
     if not (source / name).is_file():
-        raise SystemExit(f"Missing {source / name}; use Data from MSR_EEL_SUBMIT")
+        raise SystemExit(f"Missing {source / name}; use the replication package's Data directory")
 
 splits = json.loads((source / "splits.json").read_text())
 split_ids = {s: set(splits[f"{s}_ids"]) for s in ("train", "val", "test")}

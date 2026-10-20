@@ -1,21 +1,16 @@
 #!/bin/bash
-#SBATCH --gpus-per-node=A40:1
+#SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=08:00:00
-#SBATCH --job-name=ebd_candidates_qwen
-#SBATCH --output=logs/tier3_qwen_%j.out
-#SBATCH --error=logs/tier3_qwen_%j.err
-
-# EXP4 Cross-LLM: Generate candidate patches with Qwen2.5-Coder-7B-Instruct via local vLLM server.
-# Downloads model on first run (~15GB to HF_CACHE_DIR), then serves on localhost:8100.
+#SBATCH --job-name=generate_candidates_qwen
+#SBATCH --output=logs/generate_candidates_qwen_%j.out
+#SBATCH --error=logs/generate_candidates_qwen_%j.err
 
 set -euo pipefail
 
 PROJECT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "$PROJECT"
-module load Python/3.11.3-GCCcore-12.3.0
-module load CUDA/12.6.0
-source gpu_env/bin/activate
+source env/bin/activate
 
 export HF_HOME="${HF_HOME:-$PROJECT/.cache/huggingface}"
 export HF_HUB_CACHE=$HF_HOME/hub
@@ -27,7 +22,6 @@ echo "Job started: $(date)"
 echo "Node: $(hostname)"
 echo "GPU: $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader)"
 
-# Start vLLM server in background
 echo "Starting vLLM server on port $PORT ..."
 python -m vllm.entrypoints.openai.api_server \
     --model "$MODEL" \
@@ -38,7 +32,6 @@ python -m vllm.entrypoints.openai.api_server \
     &
 VLLM_PID=$!
 
-# Wait until server is ready (poll up to 10 minutes)
 echo "Waiting for vLLM server to be ready..."
 for i in $(seq 1 120); do
     if curl -s "http://localhost:${PORT}/health" > /dev/null 2>&1; then
@@ -54,8 +47,7 @@ if ! curl -s "http://localhost:${PORT}/health" > /dev/null 2>&1; then
     exit 1
 fi
 
-# Generate Tier-3 hunks
-echo "Generating T3 hunks with $MODEL ..."
+echo "Generating candidate patches with $MODEL ..."
 python data_pipeline/generate_candidates.py \
     --input       data/raw/swebench_full_instances.jsonl \
     --generations      data/cache/qwen_generations.jsonl \
@@ -74,7 +66,6 @@ python data_pipeline/build_dataset.py \
     --tier3-out data/cache/tier3_hunks_qwen.jsonl \
     --manifest data/cache/dataset_manifest_qwen.json
 
-# Shut down vLLM
 kill $VLLM_PID 2>/dev/null || true
 wait $VLLM_PID 2>/dev/null || true
 echo "Done: $(date)"

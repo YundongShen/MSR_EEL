@@ -166,16 +166,6 @@ To classify Django regions:
 python analysis/analyze_regions.py --npz logs/django_viz_data.npz --instances data/processed/instances_full.jsonl --out logs/django_region_analysis.json
 ```
 
-Optional edit-type analysis labels generated retained hunks. Export scores with
-`hunk_key` using the command below before running the analysis. Edit-type labels
-are separate from the T1/T2 labels.
-
-```bash
-python evaluate.py --checkpoint checkpoints/m2/best.pt --exp geometry --instances data/processed/instances_full.jsonl --llm-t12 data/cache/llm_t12_hunks.jsonl --tier3 data/cache/tier3_hunks.jsonl "${W[@]}" --save-hunk-scores logs/exp2_hunk_scores_m2.jsonl
-python analysis/exp2_label_hunks.py --instances data/processed/instances_full.jsonl --splits data/processed/splits.json --llm-t12 data/cache/llm_t12_hunks.jsonl
-python analysis/exp2_analysis.py
-```
-
 ## RQ4: generalization
 
 RQ4 uses the files below under
@@ -229,8 +219,7 @@ python data_pipeline/sample_haiku_merge.py --input data/raw/swebench_full_instan
 python data_pipeline/build_dataset.py --generations data/cache/new_haiku_generations.jsonl.gz --source-instances data/raw/swebench_full_instances.jsonl.gz --instances data/processed/instances_full.jsonl --splits data/processed/splits.json --retained-out data/cache/new_llm_t12_hunks.jsonl --tier3-out data/cache/new_tier3_hunks.jsonl --manifest data/cache/new_dataset_manifest.json
 ```
 
-`GEMINI_API_KEY` is needed for optional edit-type labeling, and
-`ANTHROPIC_API_KEY` for optional region classification and sampling.
+`ANTHROPIC_API_KEY` is needed for region classification and candidate sampling.
 
 ## Hunk similarity
 

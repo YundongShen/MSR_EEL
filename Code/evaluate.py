@@ -128,7 +128,7 @@ def run_geometry(
     model_label: str = "m2",
     save_scores_path: str | None = None,
 ) -> None:
-    log.info("=== Experiment 1: Geometric Structure Validation ===")
+    log.info("=== Geometry analysis ===")
 
     instances = load_test_instances(cfg, all_instances=all_instances)
     if cfg.eval.geometry_n_instances > 0:
@@ -696,7 +696,7 @@ def run_retrieval(
     is scored from the same similarities (used to select the weights on the validation split).  Default:
     the single triple in ``cfg.eval``.  Returns one dict of mean metrics per triple.
     """
-    log.info("=== Experiment 2: Retrieval (%s split) ===", split)
+    log.info("=== Retrieval evaluation (%s split) ===", split)
 
     tier_rel = cfg.eval.tier_relevance
     weights = weight_grid or [(cfg.eval.score_alpha, cfg.eval.score_beta, cfg.eval.score_gamma)]

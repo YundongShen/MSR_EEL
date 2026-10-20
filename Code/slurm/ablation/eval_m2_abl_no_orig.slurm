@@ -1,30 +1,31 @@
 #!/bin/bash
-#SBATCH --gpus-per-node=A100fat:1
+#SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=12:00:00
-#SBATCH --job-name=eval_m4
-#SBATCH --output=logs/eval_m4_%j.out
-#SBATCH --error=logs/eval_m4_%j.err
+#SBATCH --job-name=eval_m2_abl_no_orig
+#SBATCH --output=logs/eval_m2_abl_no_orig_%j.out
+#SBATCH --error=logs/eval_m2_abl_no_orig_%j.err
 
 set -euo pipefail
 export PYTHONHASHSEED=42
 
 PROJECT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "$PROJECT"
-module load Python/3.11.3-GCCcore-12.3.0
-source gpu_env/bin/activate
+source env/bin/activate
 
 echo "Job started: $(date)"
 echo "Node: $(hostname)"
 echo "GPU: $(nvidia-smi --query-gpu=name --format=csv,noheader)"
 
-# M4: M3 + Tier-aware loss (Tier-1 w=1.0, Tier-2 w=0.67)
 python evaluate.py \
-    --checkpoint checkpoints/m4/best.pt \
+    --checkpoint checkpoints/m2_abl_no_orig/best.pt \
+    --llm-t12 data/cache/llm_t12_hunks.jsonl \
     --instances  data/processed/instances_full.jsonl \
     --tier3      data/cache/tier3_hunks.jsonl \
-    --exp        all \
-    --umap \
-    --repo-pool
+    --exp        retrieval \
+    --repo-pool \
+    --score-alpha 1.0 \
+    --score-beta  0.5 \
+    --score-gamma 0.0
 
 echo "Done: $(date)"

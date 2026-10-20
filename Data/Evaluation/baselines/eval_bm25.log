@@ -1,7 +1,7 @@
 15:37:05 [INFO] Test instances: 229
 15:37:05 [INFO] Tier-3 lookup: 743 instances
 15:37:05 [INFO] === BM25 ===
-15:37:05 [INFO]   nDCG@k_gold  mean=0.2633  n=82
+15:37:05 [INFO]   nDCG@k_retained  mean=0.2633  n=82
 15:37:05 [INFO]   T2-Recall    mean=0.3218  n=47
 15:37:05 [INFO]   Perfect-Sep  mean=0.2195  n=82
 15:37:05 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_bm25.json

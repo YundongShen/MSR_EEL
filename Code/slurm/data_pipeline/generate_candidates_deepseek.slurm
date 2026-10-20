@@ -1,20 +1,16 @@
 #!/bin/bash
-#SBATCH --gpus-per-node=A40:1
+#SBATCH --gpus=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=08:00:00
-#SBATCH --job-name=ebd_candidates_deepseek
-#SBATCH --output=logs/tier3_deepseek_%j.out
-#SBATCH --error=logs/tier3_deepseek_%j.err
-
-# EXP4 Cross-LLM: Generate candidate patches with DeepSeek-Coder-7B-Instruct via local vLLM server.
+#SBATCH --job-name=generate_candidates_deepseek
+#SBATCH --output=logs/generate_candidates_deepseek_%j.out
+#SBATCH --error=logs/generate_candidates_deepseek_%j.err
 
 set -euo pipefail
 
 PROJECT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "$PROJECT"
-module load Python/3.11.3-GCCcore-12.3.0
-module load CUDA/12.6.0
-source gpu_env/bin/activate
+source env/bin/activate
 
 export HF_HOME="${HF_HOME:-$PROJECT/.cache/huggingface}"
 export HF_HUB_CACHE=$HF_HOME/hub
@@ -51,7 +47,7 @@ if ! curl -s "http://localhost:${PORT}/health" > /dev/null 2>&1; then
     exit 1
 fi
 
-echo "Generating T3 hunks with $MODEL ..."
+echo "Generating candidate patches with $MODEL ..."
 python data_pipeline/generate_candidates.py \
     --input       data/raw/swebench_full_instances.jsonl \
     --generations      data/cache/deepseek_generations.jsonl \

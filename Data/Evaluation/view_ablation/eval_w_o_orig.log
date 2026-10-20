@@ -2,12 +2,12 @@
 19:47:06 [INFO] Device: cuda
 19:47:06 [INFO] use_projection: True
 19:47:10 [INFO] Loaded encoder from checkpoints/m2_abl_no_orig/best.pt
-19:47:10 [INFO] === Experiment 2: Retrieval ===
+19:47:10 [INFO] === Retrieval evaluation ===
 19:47:10 [INFO] Test instances: 229
 19:47:10 [INFO] Tier-3 lookup: 743 instances with scope-creep hunks
 19:47:10 [INFO] Building repo-level distractor pool (test split only) …
 19:47:10 [INFO] Repo pool: 11 repos, 862 total hunks
-19:50:35 [INFO] T1-Recall(K=gold)  mean=0.6211  std=0.3705  n=43  (top-K = |T1∪T2|)
-19:50:35 [INFO] nDCG@k_gold  mean=0.6533  std=0.3711  n=82  (k = |T1∪T2| per instance)
-19:50:35 [INFO] T2-Recall(K=gold)  mean=0.6539  std=0.3740  n=47  (top-K = |T1∪T2|)
+19:50:35 [INFO] T1-Recall(K=Retained-H)  mean=0.6211  std=0.3705  n=43  (top-K = |T1∪T2|)
+19:50:35 [INFO] nDCG@k_retained  mean=0.6533  std=0.3711  n=82  (k = |T1∪T2| per instance)
+19:50:35 [INFO] T2-Recall(K=Retained-H)  mean=0.6539  std=0.3740  n=47  (top-K = |T1∪T2|)
 19:50:35 [INFO] Perfect-Sep  mean=0.8537  n=82  (all T3 ranked after all gold)

@@ -2,15 +2,15 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=16GB
 #SBATCH --time=24:00:00
-#SBATCH --job-name=ebd_download
-#SBATCH --output=logs/download_%j.out
-#SBATCH --error=logs/download_%j.err
+#SBATCH --job-name=download_full
+#SBATCH --output=logs/download_full_%j.out
+#SBATCH --error=logs/download_full_%j.err
 
 set -euo pipefail
 
 PROJECT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "$PROJECT"
-source gpu_env/bin/activate
+source env/bin/activate
 
 REPOS_DIR="${TMPDIR}/repos"
 mkdir -p "$REPOS_DIR"

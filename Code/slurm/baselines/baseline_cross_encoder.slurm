@@ -2,7 +2,7 @@
 #SBATCH --gpus=1
 #SBATCH --cpus-per-task=4
 #SBATCH --time=04:00:00
-#SBATCH --job-name=ebd_cross_encoder
+#SBATCH --job-name=baseline_cross_encoder
 #SBATCH --output=logs/baseline_cross_encoder_%j.out
 #SBATCH --error=logs/baseline_cross_encoder_%j.err
 

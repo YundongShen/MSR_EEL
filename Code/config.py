@@ -91,9 +91,6 @@ class EvalConfig:
     # Number of instances for geometric validation
     geometry_n_instances: int = -1   # -1 = all test instances
 
-    # Retrieval top-k values
-    retrieval_k_values: tuple[int, ...] = (5, 10, 20)
-
     # Optional: path to tier3_hunks.jsonl for mixing Tier-3 into evaluation
     tier3_path: str = ""
 

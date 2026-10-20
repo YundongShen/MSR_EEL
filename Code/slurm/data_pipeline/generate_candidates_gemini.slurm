@@ -1,29 +1,19 @@
 #!/bin/bash
-#SBATCH --gpus-per-node=T4:1
+#SBATCH --gpus=1
 #SBATCH --cpus-per-task=4
 #SBATCH --time=08:00:00
-#SBATCH --job-name=ebd_candidates_gemini
-#SBATCH --output=logs/tier3_gemini_%j.out
-#SBATCH --error=logs/tier3_gemini_%j.err
-
-# Cross-LLM generalization experiment (EXP4).
-# Generates candidate patches with Gemini (OpenAI-compatible API) on the 229 test instances only.
-# Retained / Tier-3 hunks are built from these generations by data_pipeline/build_dataset.py (run below).
-#
-# Submit with:
-#   sbatch --export=GEMINI_API_KEY=<your-key> slurm/data_pipeline/generate_candidates_gemini.slurm
+#SBATCH --job-name=generate_candidates_gemini
+#SBATCH --output=logs/generate_candidates_gemini_%j.out
+#SBATCH --error=logs/generate_candidates_gemini_%j.err
 
 set -euo pipefail
 
 PROJECT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "$PROJECT"
-module load Python/3.11.3-GCCcore-12.3.0
-source gpu_env/bin/activate
+source env/bin/activate
 
-# --- Gemini config (fill these in) ---
 GEMINI_API_BASE="https://generativelanguage.googleapis.com/v1beta/openai"
 GEMINI_MODEL="models/gemini-2.5-flash-lite"
-# Set GEMINI_API_KEY via --export when submitting, or export it here.
 export OPENAI_API_KEY="${GEMINI_API_KEY:-}"
 
 if [ -z "${OPENAI_API_KEY:-}" ]; then

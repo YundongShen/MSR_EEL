@@ -42,10 +42,10 @@ def result(patch_text, raw="first response"):
             "modified_files": {"a.py": "not retained"}}
 
 
-def merge(record, data, generation, sample=0, run_id="round"):
-    return sampler.merge_sample(record, data, generation, sample=sample, run_id=run_id,
+def merge(record, data, generation, sample=0):
+    return sampler.merge_sample(record, data, generation, sample=sample,
         model="claude-haiku-4-5-20251001", temperature=0.7, max_tokens=4096,
-        system_prompt="system", user_prompt="user")
+        system_prompt="system")
 
 
 class SamplingChecks(unittest.TestCase):
@@ -60,7 +60,7 @@ class SamplingChecks(unittest.TestCase):
                 self.assertEqual(count, 2)
                 self.assertEqual([h["text"] for h in candidate_hunks(record)],
                                  [h["text"] for h in diff_hunks(text)])
-                self.assertNotIn("sr_blocks_found", record["sampling"]["runs"][0])
+                self.assertNotIn("sampling", record)
                 self.assertEqual(record["generation"]["raw_response"], text)
 
     def test_generated_patch_fences_and_api_failure(self):
@@ -135,7 +135,8 @@ class SamplingChecks(unittest.TestCase):
             reference = diff_hunks(data["patch"])
             self.assertEqual(sum(gold_distance(h, reference) < 20 for h in hunks), 1)
             self.assertEqual(sum(gold_distance(h, reference) >= 20 for h in hunks), 1)
-            self.assertEqual(len(record["sampling"]["runs"]), 4)
+            self.assertNotIn("sampling", record)
+            self.assertEqual([h["sample"] for h in hunks], [0, 2])
 
     def test_dedup_preserves_first_response_and_sample_tags(self):
         data = inst()
@@ -154,7 +155,8 @@ class SamplingChecks(unittest.TestCase):
         record, count = merge(record, data, result(diff(30), "duplicate"), 2)
         self.assertEqual(count, 0)
         self.assertEqual(len(record["merged_hunks"]), 2)
-        self.assertEqual(sampler.next_sample(record), 3)
+        self.assertEqual(sampler.next_sample(record), 2)
+        self.assertNotIn("sampling", record)
 
     def test_legacy_merged_hunks_preserve_raw_negatives(self):
         record = {"generation": {"extracted_diff": diff(30)},
@@ -162,6 +164,47 @@ class SamplingChecks(unittest.TestCase):
         hunks = candidate_hunks(record)
         self.assertEqual([(h["old_start"], h["sample"]) for h in hunks], [(30, 0), (1, 1)])
         self.assertEqual(sampler.next_sample(record), 2)
+
+    def test_existing_sampling_metadata_is_preserved(self):
+        data = inst()
+        record, _ = merge(None, data, result(diff(30)))
+        record["sampling"] = {"runs": [{"sample": 5, "run_id": "previous",
+                                          "response_sha256": "saved"}]}
+        previous = copy.deepcopy(record["sampling"])
+        self.assertEqual(sampler.next_sample(record), 6)
+        record, _ = merge(record, data, result(diff()), 6)
+        self.assertEqual(record["sampling"], previous)
+        self.assertEqual(sampler.next_sample(record), 7)
+
+    def test_interrupted_sampling_resumes_from_saved_hunks(self):
+        with tempfile.TemporaryDirectory() as temp:
+            data = inst()
+            data["patch"] = diff(10)
+            input_path, output = Path(temp) / "input.jsonl", Path(temp) / "generations.jsonl"
+            sampler.save_records(input_path, {data["instance_id"]: data})
+            args = ["sample_haiku_merge.py", "--input", str(input_path), "--generations", str(output),
+                    "--samples", "2", "--run-id", "resume", "--sleep", "0"]
+            first = diff(40, "extra")
+            with patch.dict(sampler.os.environ, {"ANTHROPIC_API_KEY": "test"}), \
+                    patch.object(sys, "argv", args):
+                with patch.object(LLMClient, "complete", side_effect=[first, None]):
+                    with self.assertRaisesRegex(RuntimeError, "generation failed"):
+                        sampler.main()
+                before = sampler.load_records(output)[data["instance_id"]]
+                original = copy.deepcopy(before["generation"])
+                self.assertNotIn("sampling", before)
+                with patch.object(LLMClient, "complete", side_effect=[diff(10), first]) as complete:
+                    sampler.main()
+                    self.assertEqual(complete.call_count, 2)
+                record = sampler.load_records(output)[data["instance_id"]]
+                self.assertEqual(record["generation"], original)
+                self.assertEqual([h["sample"] for h in candidate_hunks(record)], [0, 1])
+                self.assertNotIn("sampling", record)
+                saved = output.read_bytes()
+                with patch.object(LLMClient, "complete") as complete:
+                    sampler.main()
+                    complete.assert_not_called()
+                self.assertEqual(output.read_bytes(), saved)
 
     def test_file_boundaries_and_new_files(self):
         text = diff(file="a.py") + "diff --git a/b.py b/b.py\nindex 1..2 100644\n" + diff(file="b.py")
@@ -228,7 +271,7 @@ class SamplingChecks(unittest.TestCase):
             self.assertEqual(record["generation"]["raw_response"], diff())
             self.assertEqual(record["generation"]["system_prompt"], _PATCH_SYSTEM)
             self.assertTrue(all(r["system"] == _PATCH_SYSTEM for r in requests))
-            self.assertEqual(len(record["sampling"]["runs"]), 2)
+            self.assertNotIn("sampling", record)
 
             splits = folder / "splits.json"
             splits.write_text(json.dumps({"train_ids": [data["instance_id"]], "val_ids": [], "test_ids": []}))

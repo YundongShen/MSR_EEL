@@ -1,15 +1,15 @@
 """Sample Haiku patches and merge unique hunks into one record per issue.
 
-The first generation keeps its raw response. Later samples keep only new hunks
-and a small sampling summary. Existing generation fields remain unchanged.
+The first generation keeps its raw response. Later samples keep only new hunks.
+Existing generation fields remain unchanged.
 Both plain JSONL and JSONL.gz files are supported.
 
 Run from Code:
   python data_pipeline/sample_haiku_merge.py --samples 1 --max 5
   python data_pipeline/sample_haiku_merge.py --samples 2 --run-id round-2
 
-Repeating a run-id resumes that round without calling the API for completed samples.
-Without a run-id, each invocation starts a new round. ANTHROPIC_API_KEY is required.
+Re-running continues from saved hunks and skips issues whose quota is met.
+ANTHROPIC_API_KEY is required.
 """
 
 from __future__ import annotations
@@ -18,7 +18,6 @@ import argparse
 import datetime
 import fcntl
 import gzip
-import hashlib
 import json
 import logging
 import os
@@ -81,8 +80,8 @@ def next_sample(record: dict | None) -> int:
 
 
 def merge_sample(record: dict | None, inst: dict, result: dict, *, sample: int,
-                 run_id: str, model: str, temperature: float, max_tokens: int,
-                 system_prompt: str, user_prompt: str) -> tuple[dict, int]:
+                 model: str, temperature: float, max_tokens: int,
+                 system_prompt: str) -> tuple[dict, int]:
     if record is None:
         record = {
             "instance_id": inst["instance_id"], "repo": inst.get("repo", ""),
@@ -120,15 +119,6 @@ def merge_sample(record: dict | None, inst: dict, result: dict, *, sample: int,
     record.pop("export_order", None)
     record["merged_hunks"] = merged
     record["merged_hunks"] = candidate_hunks(record)
-    summary = {
-        "run_id": run_id, "sample": sample, "created_at": now(), "model": model,
-        "temperature": temperature, "max_tokens": max_tokens,
-        "system_prompt_sha256": hashlib.sha256(system_prompt.encode()).hexdigest(),
-        "user_prompt_sha256": hashlib.sha256(user_prompt.encode()).hexdigest(),
-        "response_sha256": hashlib.sha256(result.get("raw_response", "").encode()).hexdigest(),
-        "n_hunks": len(hunks), "n_added": added,
-    }
-    record.setdefault("sampling", {}).setdefault("runs", []).append(summary)
     return record, added
 
 
@@ -137,7 +127,7 @@ def main() -> None:
     parser.add_argument("--input", type=Path, default=ROOT.parent / "Data/swebench/swebench_full_instances.jsonl.gz")
     parser.add_argument("--generations", type=Path, default=ROOT.parent / "Data/eel_dataset/haiku_generations.jsonl.gz")
     parser.add_argument("--samples", type=int, default=1, help="Samples per batch")
-    parser.add_argument("--run-id", help="Reuse this name to resume a sampling round")
+    parser.add_argument("--run-id", help="Label for this sampling run")
     parser.add_argument("--model", default="claude-haiku-4-5-20251001")
     parser.add_argument("--temperature", type=float, default=0.7)
     parser.add_argument("--max-tokens", type=int, default=4096)
@@ -182,7 +172,7 @@ def run(args, records: dict[str, dict], run_id: str, split_ids, selected_ids) ->
     llm = None
     if not args.dry_run:
         from data.llm_client import LLMClient
-        from data_pipeline.generate_candidates import generate, _build_user_prompt, _PATCH_SYSTEM
+        from data_pipeline.generate_candidates import generate, _PATCH_SYSTEM
         llm = LLMClient(provider="anthropic", model=args.model, temperature=args.temperature,
                         max_tokens=args.max_tokens, max_retries=2, retry_delay=5.0)
     processed = calls = 0
@@ -197,8 +187,7 @@ def run(args, records: dict[str, dict], run_id: str, split_ids, selected_ids) ->
                 or selected_ids is not None and iid not in selected_ids):
             continue
         old = records.get(iid)
-        completed = sum(r.get("run_id") == run_id for r in (old or {}).get("sampling", {}).get("runs", []))
-        pending = args.samples - completed % args.samples
+        pending = args.samples
         if args.max_instances is not None and processed >= args.max_instances:
             break
         if not inst.get("source_files") or not inst.get("patch"):
@@ -222,20 +211,20 @@ def run(args, records: dict[str, dict], run_id: str, split_ids, selected_ids) ->
             log.info("%s: %d pending sample(s), next sample=%d", iid, pending, next_sample(old))
             calls += pending
             continue
-        user_prompt = _build_user_prompt(inst, code_budget=args.code_budget)
+        sample = next_sample(old)
         while not enough():
             for _ in range(pending):
-                sample = next_sample(records.get(iid))
                 result = generate(inst, llm, code_budget=args.code_budget)
                 calls += 1
                 if result is None or not diff_hunks(result.get("extracted_diff") or ""):
-                    raise RuntimeError(f"{iid}: generation failed; rerun with --run-id {run_id} to resume")
+                    raise RuntimeError(f"{iid}: generation failed; rerun to continue from saved hunks")
                 record, added = merge_sample(records.get(iid), inst, result, sample=sample,
-                    run_id=run_id, model=args.model, temperature=args.temperature,
-                    max_tokens=args.max_tokens, system_prompt=_PATCH_SYSTEM, user_prompt=user_prompt)
+                    model=args.model, temperature=args.temperature,
+                    max_tokens=args.max_tokens, system_prompt=_PATCH_SYSTEM)
                 records[iid] = record
                 save_records(args.generations, records)
                 log.info("%s sample=%d: added=%d merged=%d", iid, sample, added, len(record["merged_hunks"]))
+                sample += 1
                 if args.sleep:
                     time.sleep(args.sleep)
             pending = args.samples

@@ -184,12 +184,12 @@ RQ4 uses the files below under
 | Evaluation | Directory | Instances | T3 hunks |
 |---|---|---|---|
 | SymPy omitted from training | `sympy_1cdf6f2/` | `instances_sympy.jsonl.gz` | `tier3_hunks.jsonl` |
-| GitHub PRs (Python) | `github_prs_python/` | `instances.jsonl.gz` | `tier3_mix10.jsonl.gz` |
-| GitHub PRs (Non-Python) | `github_prs_non_python/` | `instances.jsonl.gz` | `tier3_gen.jsonl.gz` |
-| Gemini-2.5-Flash-Lite | `crossllm_gemini/` | `instances.jsonl.gz` | `tier3_gen.jsonl.gz` |
-| Qwen2.5-Coder-7B | `crossllm_qwen7b/` | `instances.jsonl.gz` | `tier3_mix20.jsonl.gz` |
-| DeepSeek-Coder-7B | `crossllm_deepseek7b/` | `instances.jsonl.gz` | `tier3_mix20.jsonl.gz` |
-| SWE-bench Multilingual | `swebench_multilingual/` | `instances.jsonl.gz` | `tier3_gen.jsonl.gz` |
+| GitHub PRs (Python) | `github_prs_python/` | `instances.jsonl.gz` | `tier3_hunks.jsonl.gz` |
+| GitHub PRs (Non-Python) | `github_prs_non_python/` | `instances.jsonl.gz` | `tier3_hunks.jsonl.gz` |
+| Gemini-2.5-Flash-Lite | `crossllm_gemini/` | `instances.jsonl.gz` | `tier3_hunks.jsonl.gz` |
+| Qwen2.5-Coder-7B | `crossllm_qwen7b/` | `instances.jsonl.gz` | `tier3_hunks.jsonl.gz` |
+| DeepSeek-Coder-7B | `crossllm_deepseek7b/` | `instances.jsonl.gz` | `tier3_hunks.jsonl.gz` |
+| SWE-bench Multilingual | `swebench_multilingual/` | `instances.jsonl.gz` | `tier3_hunks.jsonl.gz` |
 
 Prepare the inputs and evaluate each dataset:
 

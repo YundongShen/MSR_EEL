@@ -11,12 +11,12 @@ from data.hunk_matching import retained_tier
 
 DATASETS = {
     "sympy_1cdf6f2": ("instances_sympy.jsonl.gz", "tier3_hunks.jsonl"),
-    "github_prs_python": ("instances.jsonl.gz", "tier3_mix10.jsonl.gz"),
-    "github_prs_non_python": ("instances.jsonl.gz", "tier3_gen.jsonl.gz"),
-    "crossllm_gemini": ("instances.jsonl.gz", "tier3_gen.jsonl.gz"),
-    "crossllm_qwen7b": ("instances.jsonl.gz", "tier3_mix20.jsonl.gz"),
-    "crossllm_deepseek7b": ("instances.jsonl.gz", "tier3_mix20.jsonl.gz"),
-    "swebench_multilingual": ("instances.jsonl.gz", "tier3_gen.jsonl.gz"),
+    "github_prs_python": ("instances.jsonl.gz", "tier3_hunks.jsonl.gz"),
+    "github_prs_non_python": ("instances.jsonl.gz", "tier3_hunks.jsonl.gz"),
+    "crossllm_gemini": ("instances.jsonl.gz", "tier3_hunks.jsonl.gz"),
+    "crossllm_qwen7b": ("instances.jsonl.gz", "tier3_hunks.jsonl.gz"),
+    "crossllm_deepseek7b": ("instances.jsonl.gz", "tier3_hunks.jsonl.gz"),
+    "swebench_multilingual": ("instances.jsonl.gz", "tier3_hunks.jsonl.gz"),
 }
 
 

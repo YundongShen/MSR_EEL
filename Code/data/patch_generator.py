@@ -51,7 +51,6 @@ _CODE_BUDGET = (8192 - 800 - 2048) * 3  # ≈ 16 032 chars  (used for small-cont
 
 # Larger budget for long-context models (Claude Sonnet/Haiku: 200K token window).
 # Leaves ~5K tokens for system prompt + issue + instructions + 4K for response.
-# Allows entire relevant files to be shown without truncation for most repos.
 _CLAUDE_CODE_BUDGET = 100_000  # ≈ 28K tokens of code context
 
 
@@ -97,7 +96,7 @@ def _extract_window(src: str, center_lines: list[int], window: int = 200) -> str
         end = min(n, cl + window)
         include.update(range(start, end))
     if not include:
-        return src
+        return ""
     segments: list[str] = []
     prev: int | None = None
     for i in sorted(include):
@@ -118,13 +117,11 @@ def _relevant_context(sample: DataSample, budget: int = _CODE_BUDGET) -> str:
         if path in sample.old_codebase and path not in seen:
             src = sample.old_codebase[path]
             centers = _hunk_start_lines(sample.reference_diff, path)
-            if centers and len(src) > budget // 2:
-                src = _extract_window(src, centers)
+            if not centers:
+                continue
+            src = _extract_window(src, centers)
             ordered.append((path, src))
             seen.add(path)
-    for path, src in sample.old_codebase.items():
-        if path not in seen:
-            ordered.append((path, src))
 
     parts: list[str] = []
     remaining = budget

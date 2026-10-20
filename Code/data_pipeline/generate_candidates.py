@@ -1,4 +1,4 @@
-"""Generate candidate patches with an LLM (one raw generation per SWE-bench issue).
+"""Generate candidate patches with an LLM (one generation per SWE-bench issue).
 
 For each SWE-bench instance:
   1. Build the prompt: issue text + code context.  The context is centred on the hunks of
@@ -6,8 +6,8 @@ For each SWE-bench instance:
      modify are: ...").
   2. Call the LLM with the unconstrained prompt: "Fix the bug. Make any changes necessary."
   3. Read the proposed changes from the response.
-  4. Append the full record (prompt inputs, raw response, extracted diff) to the generations
-     file.  Nothing is labelled here.
+  4. Append the extracted diff and generation parameters to the generations file.
+     Nothing is labelled here.
 
 Retained / non-retained (Tier 1/2/3) labels are derived from the generations by
 data_pipeline/build_dataset.py, so the labelling can be redone without calling the API again.
@@ -101,8 +101,8 @@ def _build_user_prompt(inst: dict, code_budget: int = _CLAUDE_CODE_BUDGET) -> st
 def generate(inst: dict, llm: LLMClient, code_budget: int = _CLAUDE_CODE_BUDGET) -> dict | None:
     """Generate one candidate patch for one instance.
 
-    Returns the generation fields, or None if the instance has no reference hunks or the
-    LLM call fails.  The raw response is always kept, even when no patch can be extracted.
+    Returns the extracted diff, or None if the instance has no reference hunks or the
+    LLM call fails.
     """
     if not parse_hunks(inst.get("patch", "")):
         log.debug("%s: no reference hunks, skipping", inst.get("instance_id"))
@@ -116,7 +116,6 @@ def generate(inst: dict, llm: LLMClient, code_budget: int = _CLAUDE_CODE_BUDGET)
 
     fenced = re.search(r"```(?:diff|patch)?[ \t]*\r?\n(.*?)```", raw, re.DOTALL)
     return {
-        "raw_response": raw,
         "extracted_diff": fenced.group(1) if fenced else raw,
     }
 
@@ -267,7 +266,6 @@ def main() -> None:
                     "provider": args.provider,
                     "temperature": args.temperature,
                     "max_tokens": args.max_tokens,
-                    "system_prompt": _PATCH_SYSTEM,
                     **result,
                 },
             }

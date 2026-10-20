@@ -109,7 +109,7 @@ def gold_distance(hunk: dict, reference: list[dict]) -> int:
 
 
 def candidate_hunks(record: dict, default_sample: int = 0) -> list[dict]:
-    """Union the first raw generation and later merged hunks, preserving sample tags."""
+    """Union the first generated diff and later merged hunks, preserving sample tags."""
     raw = (record.get("generation") or {}).get("extracted_diff") or ""
     candidates = diff_hunks(raw, default_sample)
     raw_keys = {hunk_identity(h) for h in candidates}

@@ -37,15 +37,14 @@ def inst():
     }
 
 
-def result(patch_text, raw="first response"):
-    return {"extracted_diff": patch_text, "raw_response": raw,
+def result(patch_text):
+    return {"extracted_diff": patch_text,
             "modified_files": {"a.py": "not retained"}}
 
 
 def merge(record, data, generation, sample=0):
     return sampler.merge_sample(record, data, generation, sample=sample,
-        model="claude-haiku-4-5-20251001", temperature=0.7, max_tokens=4096,
-        system_prompt="system")
+        model="claude-haiku-4-5-20251001", temperature=0.7, max_tokens=4096)
 
 
 class SamplingChecks(unittest.TestCase):
@@ -55,19 +54,19 @@ class SamplingChecks(unittest.TestCase):
                 text = diff().replace(" @@\n", f" @@{suffix}\n") + diff(30, file="b.py")
                 llm = types.SimpleNamespace(complete=lambda system, user: text)
                 generated = generate(inst(), llm)
-                self.assertEqual(generated, {"raw_response": text, "extracted_diff": text})
+                self.assertEqual(generated, {"extracted_diff": text})
                 record, count = merge(None, inst(), generated)
                 self.assertEqual(count, 2)
                 self.assertEqual([h["text"] for h in candidate_hunks(record)],
                                  [h["text"] for h in diff_hunks(text)])
                 self.assertNotIn("sampling", record)
-                self.assertEqual(record["generation"]["raw_response"], text)
+                self.assertEqual(record["generation"]["extracted_diff"], text)
 
     def test_generated_patch_fences_and_api_failure(self):
         text = diff()
         for raw in (f"```diff\n{text}```", f"```patch\n{text}```", f"```\n{text}```"):
             generated = generate(inst(), types.SimpleNamespace(complete=lambda system, user: raw))
-            self.assertEqual(generated["raw_response"], raw)
+            self.assertEqual(set(generated), {"extracted_diff"})
             self.assertEqual(generated["extracted_diff"], text)
         self.assertIsNone(generate(inst(), types.SimpleNamespace(complete=lambda system, user: None)))
 
@@ -138,21 +137,20 @@ class SamplingChecks(unittest.TestCase):
             self.assertNotIn("sampling", record)
             self.assertEqual([h["sample"] for h in hunks], [0, 2])
 
-    def test_dedup_preserves_first_response_and_sample_tags(self):
+    def test_dedup_preserves_first_diff_and_sample_tags(self):
         data = inst()
         record, count = merge(None, data, result(diff()))
         self.assertEqual(count, 1)
         original = copy.deepcopy(record["generation"])
         record["export_order"] = {"retained": ["old"]}
-        record, count = merge(record, data, result(diff(new_start=4) + diff(30), "later response"), 1)
+        record, count = merge(record, data, result(diff(new_start=4) + diff(30)), 1)
         self.assertEqual(count, 1)
         self.assertEqual(record["generation"], original)
-        self.assertNotIn("later response", json.dumps(record))
         self.assertNotIn("modified_files", record["generation"])
         self.assertNotIn("export_order", record)
         self.assertEqual([h["sample"] for h in candidate_hunks(record)], [0, 1])
         self.assertEqual(sampler.next_sample(record), 2)
-        record, count = merge(record, data, result(diff(30), "duplicate"), 2)
+        record, count = merge(record, data, result(diff(30)), 2)
         self.assertEqual(count, 0)
         self.assertEqual(len(record["merged_hunks"]), 2)
         self.assertEqual(sampler.next_sample(record), 2)
@@ -268,8 +266,9 @@ class SamplingChecks(unittest.TestCase):
             self.assertTrue(all(r["temperature"] == 0.7 and r["max_tokens"] == 4096 for r in requests))
             record = sampler.load_records(output)[data["instance_id"]]
             self.assertEqual([h["sample"] for h in candidate_hunks(record)], [0, 1])
-            self.assertEqual(record["generation"]["raw_response"], diff())
-            self.assertEqual(record["generation"]["system_prompt"], _PATCH_SYSTEM)
+            self.assertEqual(record["generation"]["extracted_diff"], diff())
+            self.assertEqual(set(record["generation"]),
+                             {"model", "provider", "temperature", "max_tokens", "extracted_diff"})
             self.assertTrue(all(r["system"] == _PATCH_SYSTEM for r in requests))
             self.assertNotIn("sampling", record)
 

@@ -1,6 +1,6 @@
-"""Build the candidate dataset (retained + non-retained hunks) from raw LLM generations.
+"""Build the candidate dataset (retained + non-retained hunks) from archived LLM patches.
 
-Input : raw generations, one record per SWE-bench issue (data_pipeline/generate_candidates.py),
+Input : generated patches, one record per SWE-bench issue (data_pipeline/generate_candidates.py),
         the parsed instances (fail-to-pass ids), source snapshots and the fixed split.
 Output:
   data/cache/llm_t12_hunks.jsonl    generated hunks that match the reference patch (Tier 1/2)
@@ -25,7 +25,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import logging
 import sys
@@ -135,8 +134,6 @@ def main() -> None:
                     "provider": gen.get("provider"),
                     "temperature": gen.get("temperature"),
                     "max_tokens": gen.get("max_tokens"),
-                    "system_prompt_sha256": hashlib.sha256(
-                        (gen.get("system_prompt") or "").encode()).hexdigest()[:16],
                 }
             order.setdefault(iid, None)
             if iid not in split_of:

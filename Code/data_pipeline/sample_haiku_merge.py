@@ -1,6 +1,6 @@
 """Sample Haiku patches and merge unique hunks into one record per issue.
 
-The first generation keeps its raw response. Later samples keep only new hunks.
+The first generation keeps its extracted diff. Later samples keep only new hunks.
 Existing generation fields remain unchanged.
 Both plain JSONL and JSONL.gz files are supported.
 
@@ -80,8 +80,7 @@ def next_sample(record: dict | None) -> int:
 
 
 def merge_sample(record: dict | None, inst: dict, result: dict, *, sample: int,
-                 model: str, temperature: float, max_tokens: int,
-                 system_prompt: str) -> tuple[dict, int]:
+                 model: str, temperature: float, max_tokens: int) -> tuple[dict, int]:
     if record is None:
         record = {
             "instance_id": inst["instance_id"], "repo": inst.get("repo", ""),
@@ -94,8 +93,7 @@ def merge_sample(record: dict | None, inst: dict, result: dict, *, sample: int,
             },
             "generation": {
                 "model": model, "provider": "anthropic", "temperature": temperature,
-                "max_tokens": max_tokens, "system_prompt": system_prompt,
-                **{k: v for k, v in result.items() if k != "modified_files"},
+                "max_tokens": max_tokens, "extracted_diff": result["extracted_diff"],
             },
         }
         merged = []
@@ -172,7 +170,7 @@ def run(args, records: dict[str, dict], run_id: str, split_ids, selected_ids) ->
     llm = None
     if not args.dry_run:
         from data.llm_client import LLMClient
-        from data_pipeline.generate_candidates import generate, _PATCH_SYSTEM
+        from data_pipeline.generate_candidates import generate
         llm = LLMClient(provider="anthropic", model=args.model, temperature=args.temperature,
                         max_tokens=args.max_tokens, max_retries=2, retry_delay=5.0)
     processed = calls = 0
@@ -220,7 +218,7 @@ def run(args, records: dict[str, dict], run_id: str, split_ids, selected_ids) ->
                     raise RuntimeError(f"{iid}: generation failed; rerun to continue from saved hunks")
                 record, added = merge_sample(records.get(iid), inst, result, sample=sample,
                     model=args.model, temperature=args.temperature,
-                    max_tokens=args.max_tokens, system_prompt=_PATCH_SYSTEM)
+                    max_tokens=args.max_tokens)
                 records[iid] = record
                 save_records(args.generations, records)
                 log.info("%s sample=%d: added=%d merged=%d", iid, sample, added, len(record["merged_hunks"]))

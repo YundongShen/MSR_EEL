@@ -1,7 +1,6 @@
 """Match generated hunks against the reference patch and assign Tier 1 / 2 / 3.
 
-The reference patch is used here and nowhere else in the candidate pipeline: it decides
-which generated hunks are retained.
+The reference patch provides the change locations used to label generated hunks.
 
   - A generated hunk is retained (Tier 1/2) when some reference hunk in the same file
     starts within ``MATCH_TOLERANCE`` lines of it (position only, content is not compared).

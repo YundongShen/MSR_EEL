@@ -108,15 +108,13 @@ def _load_all_instances(cfg: Config) -> list[dict]:
 
 _TIER_COLORS = {
     "1":  "#2196F3",   # blue
-    "2a": "#4CAF50",   # green  — untested, modifies existing code
-    "2b": "#FF9800",   # orange — untested, new auxiliary code
+    "2":  "#4CAF50",   # green
     "3":  "#F44336",   # red
 }
 _TIER_LABELS = {
     "1":  "Tier 1 (test-linked)",
-    "2a": "Tier 2a (untested, modifies existing)",
-    "2b": "Tier 2b (untested, new code)",
-    "3":  "Tier 3 (drift)",
+    "2":  "Tier 2 (not test-linked)",
+    "3":  "Tier 3 (non-retained)",
 }
 
 
@@ -127,7 +125,7 @@ def run_geometry(
     all_instances: bool = False,
     use_projection: bool = True,
     collect_umap: bool = False,
-    model_label: str = "m4",
+    model_label: str = "m2",
     save_scores_path: str | None = None,
 ) -> None:
     log.info("=== Experiment 1: Geometric Structure Validation ===")
@@ -142,15 +140,13 @@ def run_geometry(
         log.info("Tier-3 lookup loaded: %d instances with scope-creep hunks", len(tier3_lookup))
 
     # Full entailment scores by tier
-    tier_scores: dict[str, list[float]] = {"1": [], "2a": [], "2b": [], "3": []}
-    # ORIG-component scores for the Tier-2a vs Tier-2b internal-gradient test
-    orig_sim_scores: dict[str, list[float]] = {"2a": [], "2b": []}
+    tier_scores: dict[str, list[float]] = {"1": [], "2": [], "3": []}
     # Hunk embeddings for UMAP (only populated when collect_umap=True)
-    embs_for_umap: dict[str, list[np.ndarray]] = {"1": [], "2a": [], "2b": [], "3": []}
+    embs_for_umap: dict[str, list[np.ndarray]] = {"1": [], "2": [], "3": []}
     # Entity embeddings for UMAP (REQ/TEST/ORIG, one point per instance)
     entity_embs_for_umap: dict[str, list[np.ndarray]] = {"REQ": [], "TEST": [], "ORIG": []}
     # Per-hunk metadata for traceability: (instance_id, hunk_text, sim_req, sim_test, sim_orig)
-    hunk_meta_for_umap: dict[str, list[tuple]] = {"1": [], "2a": [], "2b": [], "3": []}
+    hunk_meta_for_umap: dict[str, list[tuple]] = {"1": [], "2": [], "3": []}
     # Per-hunk score records for --save-hunk-scores
     save_scores = save_scores_path is not None
     hunk_scores_records: list[dict] = []
@@ -197,11 +193,7 @@ def run_geometry(
             relevant_units  = _units_for_hunk(hunk, source_units)
             hunk_orig_texts = [u["code"] for u in relevant_units if u.get("code")]
 
-            # Tier-2 → 2a (has relevant ORIG units) or 2b (no ORIG match → new code)
-            if base_tier == 2:
-                eff_tier = "2a" if hunk_orig_texts else "2b"
-            else:
-                eff_tier = str(base_tier)
+            eff_tier = str(base_tier)
 
             score = encoder.entailment_score(
                 hunk_texts=[hunk_text],
@@ -216,7 +208,7 @@ def run_geometry(
             ).item()
             tier_scores[eff_tier].append(score)
 
-            # Hunk embedding (shared across UMAP + ORIG-component computation)
+            # Hunk embedding
             h_emb = encoder.encode([hunk_text], "HUNK", device, use_projection)  # (1, D)
             h_norm = F.normalize(h_emb, dim=-1)
 
@@ -246,10 +238,6 @@ def run_geometry(
                         round(sim_orig, 4),
                     ))
                 if save_scores:
-                    # sim_orig_bg: similarity to instance-level mean ORIG (background).
-                    # delta_orig = sim_orig(matched) - sim_orig_bg removes the systematic
-                    # inflation from context-line text overlap: context lines are ~94%
-                    # contained in the matched ORIG unit, pushing raw sim_orig near ceiling.
                     sim_orig_bg = (h_norm * o_norm_inst).sum(-1).item() if o_norm_inst is not None else 0.0
                     hunk_scores_records.append({
                         "instance_id": iid,
@@ -267,22 +255,8 @@ def run_geometry(
                         "delta_orig":  round(sim_orig - sim_orig_bg, 6),
                     })
 
-            # ORIG-component similarity: γ·sim(hunk, mean(relevant_ORIG))
-            # Used to confirm the Tier-2a >> Tier-2b internal gradient.
-            if base_tier == 2:
-                if hunk_orig_texts:  # 2a: has relevant ORIG units
-                    if need_anchors and o_norm_h is not None:
-                        orig_sim = sim_orig  # already computed above
-                    else:
-                        o_embs = encoder.encode(hunk_orig_texts, "ORIG", device, use_projection)
-                        o_norm = F.normalize(o_embs.mean(dim=0, keepdim=True), dim=-1)
-                        orig_sim = (h_norm * o_norm).sum(-1).item()
-                else:               # 2b: no ORIG match → similarity is 0 by construction
-                    orig_sim = 0.0
-                orig_sim_scores[eff_tier].append(orig_sim)
-
     # --- Summary statistics ---
-    for key in ("1", "2a", "2b", "3"):
+    for key in ("1", "2", "3"):
         scores = tier_scores[key]
         if scores:
             log.info(
@@ -295,7 +269,7 @@ def run_geometry(
     from scipy.stats import mannwhitneyu   # only the geometry experiment needs scipy
 
     # --- Mann-Whitney U: full entailment score ---
-    for ta, tb in [("1", "2a"), ("1", "2b"), ("2a", "2b"), ("2a", "3"), ("2b", "3"), ("1", "3")]:
+    for ta, tb in [("1", "2"), ("2", "3"), ("1", "3")]:
         sa, sb = tier_scores[ta], tier_scores[tb]
         if len(sa) >= 2 and len(sb) >= 2:
             stat, p = mannwhitneyu(sa, sb, alternative="greater")
@@ -304,22 +278,6 @@ def run_geometry(
                 "Mann-Whitney U [score]  %s > %s:  U=%.0f  p=%.4e  %s",
                 ta, tb, stat, p, sig,
             )
-
-    # --- Mann-Whitney U: ORIG-component only (Tier-2 internal gradient) ---
-    sa2a, sa2b = orig_sim_scores["2a"], orig_sim_scores["2b"]
-    if len(sa2a) >= 2 and len(sa2b) >= 2:
-        stat, p = mannwhitneyu(sa2a, sa2b, alternative="greater")
-        sig = "***" if p < 0.001 else "**" if p < 0.01 else "*" if p < 0.05 else "n.s."
-        log.info(
-            "Mann-Whitney U [ORIG-sim]  2a > 2b:  U=%.0f  p=%.4e  %s  "
-            "(n_2a=%d mean=%.4f | n_2b=%d mean=%.4f)",
-            stat, p, sig,
-            len(sa2a), np.mean(sa2a),
-            len(sa2b), np.mean(sa2b),
-        )
-    else:
-        log.info("Mann-Whitney U [ORIG-sim]  2a > 2b: skipped (n_2a=%d, n_2b=%d)",
-                 len(sa2a), len(sa2b))
 
     _maybe_histogram(tier_scores)
     if collect_umap:
@@ -342,7 +300,7 @@ def _maybe_histogram(tier_scores: dict[str, list[float]]) -> None:
         return
 
     fig, ax = plt.subplots(figsize=(9, 4))
-    for key in ("1", "2a", "2b", "3"):
+    for key in ("1", "2", "3"):
         scores = tier_scores.get(key, [])
         if scores:
             ax.hist(scores, bins=30, alpha=0.6, color=_TIER_COLORS[key], label=_TIER_LABELS[key])
@@ -361,7 +319,7 @@ def _maybe_umap(
     embs_for_umap: dict[str, list[np.ndarray]],
     entity_embs: dict[str, list[np.ndarray]],
     hunk_meta: dict[str, list[tuple]] | None = None,
-    model_label: str = "m4",
+    model_label: str = "m2",
 ) -> None:
     try:
         import umap as umap_lib          # type: ignore
@@ -376,7 +334,7 @@ def _maybe_umap(
     # --- Collect hunk embeddings (256D) for silhouette + UMAP ---
     hunk_embs_256: list[np.ndarray] = []
     hunk_keys:     list[str] = []
-    for key in ("1", "2a", "2b", "3"):
+    for key in ("1", "2", "3"):
         for emb in embs_for_umap.get(key, []):
             hunk_embs_256.append(emb)
             hunk_keys.append(key)
@@ -415,19 +373,18 @@ def _maybe_umap(
     reducer = umap_lib.UMAP(n_components=3, random_state=42, n_neighbors=15, min_dist=0.1)
     coords = reducer.fit_transform(np.array(all_embs))  # (N, 3)
 
-    # --- Gradient colormap: deep blue (T1, most necessary) → red (T3, scope creep) ---
     tier_cmap = mcolors.LinearSegmentedColormap.from_list(
-        "tier_necessity", ["#2196F3", "#4CAF50", "#FF9800", "#F44336"], N=256,
+        "tier", ["#2196F3", "#4CAF50", "#F44336"], N=256,
     )
-    tier_cval = {"1": 0.0, "2a": 1 / 3, "2b": 2 / 3, "3": 1.0}
+    tier_cval = {"1": 0.0, "2": 0.5, "3": 1.0}
 
-    # --- Save raw coords for optional M0 vs M4 paired figure ---
+    # --- Save raw coords for the paired figure ---
     out_dir = Path("logs")
     out_dir.mkdir(exist_ok=True)
     # Build flat metadata arrays ordered to match hunk_keys
     meta_iid, meta_text, meta_sreq, meta_stest, meta_sorig = [], [], [], [], []
     if hunk_meta:
-        for key in ("1", "2a", "2b", "3"):
+        for key in ("1", "2", "3"):
             for (iid, txt, sr, st, so) in hunk_meta.get(key, []):
                 meta_iid.append(iid)
                 meta_text.append(txt)
@@ -455,19 +412,18 @@ def _maybe_umap(
     sm = ScalarMappable(cmap=tier_cmap, norm=mcolors.Normalize(0, 1))
     sm.set_array([])
     cbar = fig.colorbar(sm, ax=ax, shrink=0.45, pad=0.12, aspect=20)
-    cbar.set_ticks([0.0, 1 / 3, 2 / 3, 1.0])
+    cbar.set_ticks([0.0, 0.5, 1.0])
     cbar.set_ticklabels(
-        ["T1 (test-linked)", "T2a (untested, modifies)", "T2b (untested, new)", "T3 (scope creep)"],
+        ["T1 (test-linked)", "T2 (not test-linked)", "T3 (non-retained)"],
         fontsize=7,
     )
-    cbar.set_label("HUNK necessity →", fontsize=8)
+    cbar.set_label("Hunk tier", fontsize=8)
 
     out = out_dir / f"umap_3d_{model_label}.png"
     fig.savefig(out, dpi=150, bbox_inches="tight")
     log.info("3D UMAP saved → %s", out)
     plt.close(fig)
 
-    # --- Attempt paired M0/M4 comparison if both npz files exist ---
     _maybe_paired_umap(out_dir, entity_cfg, tier_cmap, tier_cval)
 
 
@@ -484,8 +440,7 @@ def _draw_umap_ax(
 ) -> None:
     z_min = float(coords[:, 2].min()) - 0.5
 
-    # HUNK points: gradient color by tier necessity
-    for key in ("1", "2a", "2b", "3"):
+    for key in ("1", "2", "3"):
         idx = [i for i, k in enumerate(all_tags[:n_hunks]) if k == key]
         if not idx:
             continue
@@ -529,8 +484,8 @@ def _maybe_paired_umap(
     tier_cval: dict[str, float],
 ) -> None:
     m0_path = out_dir / "umap_embs_m0.npz"
-    m4_path = out_dir / "umap_embs_m4.npz"
-    if not (m0_path.exists() and m4_path.exists()):
+    m2_path = out_dir / "umap_embs_m2.npz"
+    if not (m0_path.exists() and m2_path.exists()):
         return
 
     try:
@@ -542,7 +497,7 @@ def _maybe_paired_umap(
         return
 
     panels = []
-    for panel_label, path in [("M0 (untrained UniXCoder)", m0_path), ("M4 (trained)", m4_path)]:
+    for panel_label, path in [("M0 (untrained UniXCoder)", m0_path), ("M2 (EEL)", m2_path)]:
         d = np.load(path, allow_pickle=True)
         sil_val = float(d["sil"][0])
         panels.append((
@@ -564,17 +519,17 @@ def _maybe_paired_umap(
     sm = ScalarMappable(cmap=tier_cmap, norm=mcolors.Normalize(0, 1))
     sm.set_array([])
     cbar = fig.colorbar(sm, ax=axes, shrink=0.45, pad=0.04, aspect=25)
-    cbar.set_ticks([0.0, 1 / 3, 2 / 3, 1.0])
+    cbar.set_ticks([0.0, 0.5, 1.0])
     cbar.set_ticklabels(
-        ["T1 (test-linked)", "T2a (untested, modifies)", "T2b (untested, new)", "T3 (scope creep)"],
+        ["T1 (test-linked)", "T2 (not test-linked)", "T3 (non-retained)"],
         fontsize=8,
     )
-    cbar.set_label("HUNK necessity →", fontsize=9)
-    fig.suptitle("4-Entity Embedding Space: M0 vs M4 (UMAP-3D)", fontsize=13)
+    cbar.set_label("Hunk tier", fontsize=9)
+    fig.suptitle("4-Entity Embedding Space: M0 vs M2 (UMAP-3D)", fontsize=13)
 
     out = out_dir / "umap_3d_paired.png"
     fig.savefig(out, dpi=150, bbox_inches="tight")
-    log.info("Paired M0/M4 UMAP saved → %s", out)
+    log.info("Paired M0/M2 UMAP saved → %s", out)
     plt.close(fig)
 
 
@@ -963,7 +918,6 @@ def main(
         ckpt = cfg.eval.checkpoint_path
         p = Path(ckpt)
         parent = p.parent.name
-        # "checkpoints/m4/best.pt" → "m4"; legacy "checkpoints/best.pt" → "trained"
         model_label = parent if parent != "checkpoints" else "trained"
 
     if exp in ("geometry", "all"):

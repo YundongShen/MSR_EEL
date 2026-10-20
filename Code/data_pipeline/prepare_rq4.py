@@ -37,7 +37,7 @@ def prepare(source, output, instances_name, tier3_name):
     with (output / "instances.jsonl").open("w", encoding="utf-8") as instances, \
             (output / "llm_t12_hunks.jsonl").open("w", encoding="utf-8") as retained:
         for record in read_records(source / instances_name):
-            hunks = record.pop("gold_hunks")
+            hunks = record.pop("llm_t12_hunks")
             for hunk in hunks:
                 if hunk.get("tier_label") is None:
                     hunk["tier_label"] = retained_tier(hunk["filepath"], record.get("fail_to_pass_ids", []))

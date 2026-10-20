@@ -22,10 +22,9 @@ def has_text(hunk):
 
 
 def retained_hunks(record):
-    for field in ("llm_t12_hunks", "gold_hunks"):
-        if field in record:
-            return record[field] or []
-    raise ValueError(f"Missing retained hunks: {record['instance_id']}")
+    if "llm_t12_hunks" not in record:
+        raise ValueError(f"Missing retained hunks: {record['instance_id']}")
+    return record["llm_t12_hunks"] or []
 
 
 def eligible_ids(instances, tier3_records):

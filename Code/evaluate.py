@@ -62,7 +62,6 @@ def load_encoder(
 
     ckpt_path = Path(cfg.eval.checkpoint_path)
     if ckpt_path.exists():
-        # Refuses a checkpoint that was not trained on LLM-generated hunks (data.provenance).
         ckpt = load_checkpoint_checked(ckpt_path, map_location=device, allow_legacy=allow_legacy)
         encoder.load_state_dict(ckpt["encoder_state"])
         encoder.checkpoint_identity = checkpoint_identity(ckpt)   # ties score_weights.json to this checkpoint
@@ -93,11 +92,7 @@ def load_tier3_lookup(path: str) -> dict[str, list[dict]]:
 # ---------------------------------------------------------------------------
 
 def load_test_instances(cfg: Config, all_instances: bool = False, split: str = "test") -> list[dict]:
-    """Load the instances of a split (same split logic as train.py); ``split`` is "test" or "val".
-
-    ``load_instances`` drops the reference patch's own hunks: candidates come from
-    data.retained_hunks only.
-    """
+    """Load instance inputs using the same split logic as train.py."""
     ids = None if all_instances else load_split_ids("data/processed/splits.json", split)
     return load_instances(cfg.data.instances_path, ids)
 
@@ -1014,7 +1009,7 @@ if __name__ == "__main__":
                         help="Select alpha/beta/gamma on the validation split, write score_weights.json next to the "
                              "checkpoint and exit (uses the same candidates as --exp retrieval; pass --repo-pool and --tier3 as for the test run)")
     parser.add_argument("--allow-legacy-checkpoint", action="store_true",
-                        help="Load a checkpoint without a data_provenance stamp (archival diagnostics only; such models may have been trained on the reference patch's own hunks)")
+                        help="Load a checkpoint without requiring matching data_provenance metadata")
     parser.add_argument("--save-hunk-scores", default=None, metavar="PATH",
                         help="Save per-hunk (instance_id, hunk_id, hunk_key, tier, score, sim_req, sim_test, sim_orig) to JSONL")
     args = parser.parse_args()

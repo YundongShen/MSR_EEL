@@ -36,10 +36,10 @@ submission's `Data` directory. The setup checks:
 Setup decompresses the parsed instances into `data/processed/`, copies the fixed
 splits and generated candidates, and creates Django and SymPy instance subsets
 and their complements. Model candidates are read from `llm_t12_hunks.jsonl` and
-`tier3_hunks.jsonl`; reference-patch hunks are excluded by the instance loader.
+`tier3_hunks.jsonl`.
 
 `Retained-H` denotes LLM-generated hunks matched to the reference patch
-(T1/T2); `Gold-H` denotes the reference patch's own hunks. Code and JSON use
+(T1/T2). Code and JSON use
 `retained` in identifiers, including `n_retained`, `mean_retained` and
 `std_retained`. The metric field `ndcg_k` uses the Retained-H count for k.
 
@@ -121,9 +121,8 @@ python evaluate.py --checkpoint checkpoints/m2_abl_no_req/best.pt --exp retrieva
 ```
 
 Training produces the checkpoints used by the evaluation commands. Checkpoint
-weights are not included in the repository. The default loader checks the
-generated-data provenance stamp; `--allow-legacy-checkpoint` permits loading
-older checkpoints without this stamp.
+weights are not included in the repository. The loader validates `data_provenance`
+metadata by default; `--allow-legacy-checkpoint` bypasses this metadata check.
 
 ## Baseline implementations
 

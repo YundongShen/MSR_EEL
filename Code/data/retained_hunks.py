@@ -1,12 +1,8 @@
 """Candidate hunks of an instance: retained (Tier 1/2) and non-retained (Tier 3).
 
 Retained-H are the LLM-generated hunks that match the reference patch, read from
-``cfg.data.llm_t12_path`` (built by data_pipeline/build_dataset.py); Tier-3 hunks come from the
-companion ``tier3_hunks.jsonl``.  An instance without a retained hunk has none.  Retained,
-Tier-3 and distractor candidates all come from the same generation process and the same diff
-renderer.  The reference patch's own hunks are never a candidate: both loaders validate the
-file (data.provenance.validate_generated_hunks) and refuse anything that does not look like
-build_dataset.py output.
+``cfg.data.llm_t12_path``; Tier-3 hunks come from ``tier3_hunks.jsonl``. Both loaders validate
+the required fields, tier labels, and diff headers.
 
 Every hunk gets ``hunk_id`` (index in its instance list) and ``hunk_key`` (content fingerprint).
 Join score files and labels on ``hunk_key``: the index changes whenever the dataset is rebuilt.

@@ -6,8 +6,7 @@ Extracts the REQ / TEST / ORIG entities per instance (all from JSONL, no repo ne
   TEST - fail-to-pass test function bodies, as they are AFTER the reference test patch is applied
          (most fail-to-pass tests are added by the test patch: they do not exist in the base commit)
   ORIG - original project code units (functions/classes from source_files)
-  (HUNK entities are NOT stored here: candidate hunks are LLM-generated, see data_pipeline/build_dataset.py.
-   The reference patch's own hunks are deliberately not written to the instances file.)
+Candidate hunks are stored separately by data_pipeline/build_dataset.py.
 
 Output: data/processed/instances_lite.jsonl or instances_full.jsonl
         One line per instance, all entity types included.

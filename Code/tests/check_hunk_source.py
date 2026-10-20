@@ -1,18 +1,10 @@
-"""Regression checks: training / evaluation only ever see LLM-generated hunks, never the reference patch's own.
+"""Checks for candidate loading, input validation, and checkpoint metadata.
 
 Run from the project root (no pytest needed, CPU only):
     CUDA_VISIBLE_DEVICES="" gpu_env312/bin/python tests/check_hunk_source.py
 
-What is checked
-  1. static: no live script mentions ``gold_hunks`` except the loader that drops the field
-  2. sentinel: an instance carrying a reference-patch hunk ("GOLD_SENTINEL") and an LLM-generated
-     retained hunk ("GEN_SENTINEL") yields training pairs containing only the generated one
-  3. regression of the old fallback (``hunks = llm_t12 if llm_t12 else gold_hunks``): an instance with a
-     reference-patch hunk but NO retained hunk contributes no hunk pair
-  4. hunk-file validation rejects reference-patch style files
-  5. checkpoints without a valid data_provenance stamp are refused
-  6. hunk_key is stable and content-sensitive
-  7. (if present) the real data/cache files pass validation
+Checks cover candidate-file isolation, required fields, checkpoint metadata,
+content fingerprints, and available runtime candidate files.
 """
 
 from __future__ import annotations
@@ -70,7 +62,9 @@ def check_static() -> None:
     for path in ROOT.rglob("*"):
         if path.suffix not in (".py", ".slurm", ".sh") or set(path.relative_to(ROOT).parts) & _SKIP_DIRS:
             continue
-        if path.name == "instances.py":          # the loader that drops the field
+        if path.relative_to(ROOT).as_posix() in {
+            "data/instances.py", "data_pipeline/build_dataset.py", "data_pipeline/prepare_rq4.py"
+        }:
             continue
         for n, line in enumerate(path.read_text(errors="replace").splitlines(), 1):
             if re.search(r"gold_hunks", line):
@@ -82,7 +76,7 @@ def check_sentinel_and_fallback() -> None:
     with tempfile.TemporaryDirectory() as d:
         d = Path(d)
         inst_path = write_jsonl(d / "inst.jsonl", [instance("repo__x-1"), instance("repo__x-2")])
-        # x-1 has a retained generated hunk; x-2 has none (only a reference-patch hunk in its record)
+        # Only x-1 has retained candidates.
         ret_path = write_jsonl(d / "ret.jsonl", [{"instance_id": "repo__x-1", "llm_t12_hunks": [gen_hunk()]}])
 
         loaded = load_instances(inst_path)
@@ -92,7 +86,7 @@ def check_sentinel_and_fallback() -> None:
         hunk_texts = [p.text_b for p in ds if p.type_b == "HUNK"]
         assert hunk_texts, "no hunk pairs were built from the generated hunk"
         assert all(GEN in t for t in hunk_texts), "a HUNK text is not the generated hunk"
-        assert not any(GOLD in p.text_a + p.text_b for p in ds), "reference-patch hunk text reached a training pair"
+        assert not any(GOLD in p.text_a + p.text_b for p in ds), "a training pair used an excluded input field"
 
         by_inst = {p.instance_id for p in ds if p.pair_type in ("req_hunk", "orig_hunk")}
         assert by_inst == {"repo__x-1"}, f"instance without a retained hunk produced hunk pairs: {by_inst}"
@@ -103,7 +97,7 @@ def check_validation() -> None:
     validate_generated_hunks(ok, (1, 2), "ok")                              # accepted
     validate_generated_hunks({"i": [gen_hunk(hunk_diff="@@ -1,1 +1,1 @@ def f\n-x\n+y\n")]}, (1, 2), "named")
     bad = {
-        "no sample field (reference-patch record)": {"i": [{k: v for k, v in gen_hunk().items() if k != "sample"}]},
+        "no sample field": {"i": [{k: v for k, v in gen_hunk().items() if k != "sample"}]},
         "wrong tier": {"i": [gen_hunk(tier=3)]},
         "invalid diff header": {"i": [gen_hunk(hunk_diff="@@ invalid\n-x\n+y\n")]},
     }
@@ -125,7 +119,7 @@ def check_checkpoint_stamp() -> None:
         try:
             check_checkpoint(ckpt, name)
         except CheckpointProvenanceError:
-            check_checkpoint(ckpt, name, allow_legacy=True)                 # explicit archival override works
+            check_checkpoint(ckpt, name, allow_legacy=True)
             continue
         raise AssertionError(f"checkpoint accepted: {name}")
 

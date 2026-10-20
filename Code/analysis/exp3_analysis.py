@@ -92,7 +92,7 @@ def load_encoder(
 # ---------------------------------------------------------------------------
 
 def load_test_instances(instances_path: str) -> list[dict]:
-    """Test-split instances; the reference patch's own hunks are dropped on load."""
+    """Load the test-split instance inputs."""
     return load_instances(instances_path, load_split_ids("data/processed/splits.json", "test"))
 
 
@@ -434,7 +434,7 @@ def main() -> None:
                         help="a=stratified eval, b=ORIG alignment, all=both")
     add_retained_args(parser)
     parser.add_argument("--allow-legacy-checkpoint", action="store_true",
-                        help="Load checkpoints without a data_provenance stamp (archival diagnostics only)")
+                        help="Load checkpoints without requiring matching data_provenance metadata")
     args = parser.parse_args()
 
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")

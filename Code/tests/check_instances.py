@@ -73,7 +73,7 @@ def check_unappliable_and_missing_base() -> None:
 def check_no_test_found_stays_empty() -> None:
     inst = _instance(["tests/test_x.py::test_missing"], _diff("tests/test_x.py", BASE_X, POST_X), {"tests/test_x.py": BASE_X})
     assert pi.process_instance(inst)["test_functions"] == []
-    assert "gold_hunks" not in pi.process_instance(inst), "instances must not carry the reference patch's own hunks"
+    assert "gold_hunks" not in pi.process_instance(inst), "candidate hunks must be stored separately"
 
 
 def check_fallback_from_patch_when_file_missing() -> None:
@@ -140,7 +140,7 @@ def check_real_instances_file() -> None:
         empty += not r["test_functions"]
         with_gold += "gold_hunks" in r
     assert n == 2291, f"{n} instances"
-    assert with_gold == 0, "the instances file carries the reference patch's own hunks: rebuild it with data_pipeline/parse_instances.py"
+    assert with_gold == 0, "candidate hunks must be stored separately: rebuild with data_pipeline/parse_instances.py"
     assert empty / n < 0.02, f"TEST view empty for {empty}/{n} issues: the test code was not read from the post-test-patch files"
     print(f"  real file ok: {n} issues, TEST view empty for {empty}")
 

@@ -129,8 +129,6 @@ class EntailmentDataset(Dataset):
         self._rng = random.Random(seed)
         self._pairs: list[EntailmentPair] = []
 
-        # Retained (T1/T2) hunks keyed by instance_id, built by data_pipeline/build_dataset.py.  The loader
-        # validates the file: LLM-generated hunks only, never the reference patch's own hunks.
         llm_t12_lookup = load_retained_hunks(llm_t12_path)
 
         instances = self._load_instances(Path(instances_path))
@@ -146,7 +144,7 @@ class EntailmentDataset(Dataset):
 
     @staticmethod
     def _load_instances(path: Path) -> list[dict]:
-        return load_instances(path)   # drops the reference patch's own hunks
+        return load_instances(path)
 
     # ------------------------------------------------------------------
     # Pair construction

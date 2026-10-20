@@ -1,5 +1,4 @@
-"""Provenance of the hunks a model was trained on, and content checks for hunk files.
-"""
+"""Candidate-file validation and checkpoint dataset metadata."""
 
 from __future__ import annotations
 
@@ -14,8 +13,6 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 PROTOCOL_VERSION = 2
-# Positives = LLM-generated hunks that match a reference-patch hunk (Tier 1/2); negatives = LLM-generated
-# hunks that do not (Tier 3).  The reference patch's own hunks are never a candidate.
 HUNK_SOURCE = "llm_generated_matched"
 
 _REQUIRED_FIELDS = ("filepath", "old_start_line", "hunk_diff", "tier_label", "sample")
@@ -23,7 +20,7 @@ _HEADER = re.compile(r"^@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@(.*)$")
 
 
 class CheckpointProvenanceError(RuntimeError):
-    """The checkpoint was not trained under the current hunk protocol."""
+    """The checkpoint metadata does not match the expected protocol."""
 
 
 # ---------------------------------------------------------------------------
@@ -31,8 +28,7 @@ class CheckpointProvenanceError(RuntimeError):
 # ---------------------------------------------------------------------------
 
 def hunk_key(hunk: dict) -> str:
-    """Content fingerprint of a hunk.  Unlike a list index it survives rebuilding the dataset,
-    so score files, edit-type labels and survey maps can be joined without silent mismatches."""
+    """Content fingerprint for joining hunk scores and analysis records."""
     raw = f"{hunk.get('filepath', '')}\x00{hunk.get('old_start_line', '')}\x00{hunk.get('hunk_diff', '')}"
     return hashlib.sha1(raw.encode()).hexdigest()[:12]
 
@@ -42,14 +38,14 @@ def validate_generated_hunks(
     allowed_tiers: tuple[int, ...],
     source: str,
 ) -> None:
-    """Raise if ``by_instance`` does not look like build_dataset.py output (LLM-generated hunks)."""
+    """Validate required hunk fields, tier labels, and diff headers."""
     for iid, hunks in by_instance.items():
         for h in hunks:
             missing = [k for k in _REQUIRED_FIELDS if k not in h]
             if missing:
                 raise ValueError(
-                    f"{source}: {iid} has a hunk without {missing}. The file was not produced by "
-                    "data_pipeline/build_dataset.py (reference-patch hunks lack 'sample'); rebuild it."
+                    f"{source}: {iid} has a hunk without required fields {missing}. "
+                    "Prepare the candidate file with data_pipeline/build_dataset.py."
                 )
             if h["tier_label"] not in allowed_tiers:
                 raise ValueError(f"{source}: {iid} has tier_label={h['tier_label']!r}, expected one of {allowed_tiers}")
@@ -69,7 +65,7 @@ def file_digest(path: str | Path | None) -> str | None:
 
 
 def describe_hunk_files(retained_path: str | Path, tier3_path: str | Path | None) -> str:
-    """One log line naming the hunk files a run used, with digests (put it in every eval log)."""
+    """Summarize candidate file paths and content digests."""
     parts = [f"retained={retained_path} sha256={file_digest(retained_path)}"]
     if tier3_path:
         parts.append(f"tier3={tier3_path} sha256={file_digest(tier3_path)}")
@@ -99,7 +95,7 @@ def build_stamp(
     same_repo: bool,
     tier_aware_loss: bool,
 ) -> dict:
-    """What a checkpoint was trained on.  Stored under ``data_provenance`` in every checkpoint."""
+    """Build the dataset and protocol metadata saved with a checkpoint."""
     return {
         "protocol_version": PROTOCOL_VERSION,
         "hunk_source": HUNK_SOURCE,
@@ -124,7 +120,7 @@ def check_checkpoint(ckpt: dict, path: str | Path, allow_legacy: bool = False) -
     if stamp is None:
         problem = "has no data_provenance stamp"
     elif stamp.get("hunk_source") != HUNK_SOURCE or stamp.get("protocol_version") != PROTOCOL_VERSION:
-        problem = (f"was trained with hunk_source={stamp.get('hunk_source')!r}, "
+        problem = (f"declares hunk_source={stamp.get('hunk_source')!r}, "
                    f"protocol_version={stamp.get('protocol_version')!r}; expected "
                    f"{HUNK_SOURCE!r}, {PROTOCOL_VERSION}")
     if problem:
@@ -132,8 +128,8 @@ def check_checkpoint(ckpt: dict, path: str | Path, allow_legacy: bool = False) -
             log.warning("Checkpoint %s: %s", path, problem)
             return stamp
         raise CheckpointProvenanceError(
-            f"Checkpoint {path} {problem}. Retrain it with train.py, or pass --allow-legacy-checkpoint "
-            "for an archival diagnostic."
+            f"Checkpoint {path} {problem}. Use a checkpoint with matching metadata, "
+            "or pass --allow-legacy-checkpoint to bypass this metadata check."
         )
     log.info("Checkpoint %s: hunk_source=%s, retained=%s (sha256 %s), tier3=%s, pairs=%s, git=%s%s",
              path, stamp["hunk_source"], stamp["retained_file"], stamp["retained_sha256"],
@@ -143,7 +139,7 @@ def check_checkpoint(ckpt: dict, path: str | Path, allow_legacy: bool = False) -
 
 
 def load_checkpoint_checked(path: str | Path, map_location="cpu", allow_legacy: bool = False) -> dict:
-    """torch.load + provenance check.  Every place that loads a trained encoder must use this."""
+    """Load a checkpoint and validate its dataset metadata."""
     import torch
 
     ckpt = torch.load(path, map_location=map_location)

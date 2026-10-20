@@ -1,12 +1,4 @@
-"""Load parsed instances without the reference patch's own hunks.
-
-``instances_*.jsonl`` files written by older versions of data_pipeline/parse_instances.py carry a
-``gold_hunks`` field: the hunks of the SWE-bench reference patch itself.  No training,
-evaluation or analysis step may see it -- candidates are LLM-generated hunks only
-(data/retained_hunks.py).  Every reader of the instances file therefore goes through
-``load_instances``, which drops the field, so reference-patch hunks cannot reach a model even
-if an old instances file is used.
-"""
+"""Load parsed issue, source, and test inputs."""
 
 from __future__ import annotations
 
@@ -15,7 +7,7 @@ from pathlib import Path
 
 
 def load_instances(path: str | Path, ids: set[str] | None = None) -> list[dict]:
-    """Read an instances JSONL; keep only ``ids`` when given; never return ``gold_hunks``."""
+    """Read instance inputs, optionally restricted to ``ids``."""
     instances: list[dict] = []
     with open(path) as fh:
         for line in fh:

@@ -9,7 +9,6 @@ from pathlib import Path
 @dataclass
 class DataConfig:
     # Parsed instances (output of data_pipeline/parse_instances.py): the paper uses all 2,291 SWE-bench issues.
-    # Read them with data.instances.load_instances, which drops the reference patch's own hunks.
     instances_path: str = "data/processed/instances_full.jsonl"
 
     # Tier-3 hunks used as same-instance hard negatives during training

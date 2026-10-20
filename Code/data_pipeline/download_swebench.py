@@ -1,8 +1,8 @@
-"""Download SWE-bench Lite and clone repos at their base commits.
+"""Download SWE-bench Full and clone repos at their base commits.
 
 Run once on a node with internet access:
 
-    python data_pipeline/download_swebench.py --output data/raw/swebench_instances.jsonl
+    python data_pipeline/download_swebench.py --output data/raw/swebench_full_instances.jsonl
 
 Each output line (JSONL):
 {
@@ -35,7 +35,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 log = logging.getLogger(__name__)
 
 GITHUB_BASE = "https://github.com/{repo}.git"
-HF_DATASET = "princeton-nlp/SWE-bench_Lite"
+HF_DATASET = "princeton-nlp/SWE-bench"
 
 
 # ---------------------------------------------------------------------------
@@ -241,13 +241,13 @@ def process_instance(instance: dict, repos_dir: Path) -> dict | None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Download SWE-bench + clone repos")
-    parser.add_argument("--output", default="data/raw/swebench_instances.jsonl")
+    parser.add_argument("--output", default="data/raw/swebench_full_instances.jsonl")
     parser.add_argument("--repos-dir", default="data/repos")
     parser.add_argument("--max", type=int, default=None, help="Limit number of instances")
     parser.add_argument("--split", default="test", help="HuggingFace split name")
     parser.add_argument(
         "--dataset", default=HF_DATASET,
-        help="HuggingFace dataset name, e.g. princeton-nlp/SWE-bench or princeton-nlp/SWE-bench_Lite",
+        help="HuggingFace dataset name (default: princeton-nlp/SWE-bench)",
     )
     parser.add_argument(
         "--repo-filter", default=None,

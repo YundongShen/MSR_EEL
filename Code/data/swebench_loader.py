@@ -1,10 +1,10 @@
-"""DataLoader for locally downloaded SWE-bench Lite instances.
+"""DataLoader for locally downloaded SWE-bench Full instances.
 
 Expects the JSONL file produced by ``data_pipeline/download_swebench.py``.
 
 Usage::
 
-    loader = SWEBenchLoader("data/raw/swebench_instances.jsonl")
+    loader = SWEBenchLoader("data/raw/swebench_full_instances.jsonl")
     for sample in loader:
         print(sample.sample_id, len(sample.old_codebase))
 """
@@ -19,7 +19,7 @@ from .data_loader import DataLoader, DataSample
 
 
 class SWEBenchLoader(DataLoader):
-    """Load SWE-bench Lite instances from a local JSONL file.
+    """Load SWE-bench Full instances from a local JSONL file.
 
     Each DataSample produced has:
     - ``old_codebase``: source files touched by the reference patch

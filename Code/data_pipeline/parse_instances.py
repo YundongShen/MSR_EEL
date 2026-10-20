@@ -8,17 +8,11 @@ Extracts the REQ / TEST / ORIG entities per instance (all from JSONL, no repo ne
   ORIG - original project code units (functions/classes from source_files)
 Candidate hunks are stored separately by data_pipeline/build_dataset.py.
 
-Output: data/processed/instances_lite.jsonl or instances_full.jsonl
+Output: data/processed/instances_full.jsonl
         One line per instance, all entity types included.
 Resumable: skips already-written instance_ids on restart.
 
 Usage:
-  # Experimental (Lite, 82 instances):
-  python data_pipeline/parse_instances.py \
-      --input data/raw/swebench_instances.jsonl \
-      --output data/processed/instances_lite.jsonl
-
-  # Later (Full, 2294 instances):
   python data_pipeline/parse_instances.py \
       --input data/raw/swebench_full_instances.jsonl \
       --output data/processed/instances_full.jsonl

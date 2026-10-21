@@ -22,10 +22,10 @@
 11:11:02 [INFO]   Δ(M2-M1) easy: nDCG=0.2938  T2-Recall=0.2374  PSR=0.5610
 11:11:02 [INFO] Hard Δ=0.2921  Easy Δ=0.2374
 11:11:02 [INFO] === Analysis B: ORIG Signal Alignment ===
-11:11:57 [INFO] m1 ORIG-sim: gold n=714 mean=0.8970 std=0.0806 | t3 n=134 mean=0.8637 std=0.0902
-11:11:57 [INFO] m1 Mann-Whitney U [gold>t3]: U=60104  p=1.2125e-06  r=0.2564  ***
-11:11:57 [INFO] m2 ORIG-sim: gold n=714 mean=0.8791 std=0.1161 | t3 n=134 mean=0.1677 std=0.1933
-11:11:57 [INFO] m2 Mann-Whitney U [gold>t3]: U=94641  p=1.1904e-72  r=0.9784  ***
+11:11:57 [INFO] m1 ORIG-sim: Retained-H n=714 mean=0.8970 std=0.0806 | t3 n=134 mean=0.8637 std=0.0902
+11:11:57 [INFO] m1 Mann-Whitney U [Retained-H>t3]: U=60104  p=1.2125e-06  r=0.2564  ***
+11:11:57 [INFO] m2 ORIG-sim: Retained-H n=714 mean=0.8791 std=0.1161 | t3 n=134 mean=0.1677 std=0.1933
+11:11:57 [INFO] m2 Mann-Whitney U [Retained-H>t3]: U=94641  p=1.1904e-72  r=0.9784  ***
 11:11:57 [INFO] Δr=0.7220  Δmean_gap=0.6781
 11:11:57 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/exp3_analysis_1cdf6f2_m2new.json
 Done Fri Oct 16 11:11:59 CEST 2026

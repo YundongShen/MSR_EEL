@@ -10,5 +10,5 @@
 19:54:10 [INFO] T1-Recall(K=Retained-H)  mean=0.7366  std=0.3398  n=43  (top-K = |T1∪T2|)
 19:54:10 [INFO] nDCG@k_retained  mean=0.7838  std=0.3168  n=82  (k = |T1∪T2| per instance)
 19:54:10 [INFO] T2-Recall(K=Retained-H)  mean=0.7814  std=0.3277  n=47  (top-K = |T1∪T2|)
-19:54:10 [INFO] Perfect-Sep  mean=0.8659  n=82  (all T3 ranked after all gold)
+19:54:10 [INFO] Perfect-Sep  mean=0.8659  n=82  (all T3 ranked after all retained hunks)
 Done Mon Oct 12 19:54:11 CEST 2026

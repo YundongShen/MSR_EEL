@@ -187,7 +187,7 @@ Subtracting $\mathcal{R}^\ast(\lbrace Q, T, O\rbrace)$ from both sides and apply
 
 *(c)* follows from (4): replacing each Bayes risk by the empirical risk of a trained model introduces the corresponding excess risk, so the estimate carries a bias bounded by the difference of the two excess risks. $\blacksquare$
 
-> **Corollary 1 (Non-negativity and the noise floor).** $\Delta_i \geq 0$ for every $i$, with equality if and only if $Y^\ast \perp\!\!\!\perp X_i \mid (X_{S_{-i}}, H)$. Any negative empirical gap is therefore attributable entirely to estimation and optimization error, and the magnitude of negative gaps observed across seeds calibrates the resolution at which small positive gaps can be distinguished from zero.
+> **Corollary 1 (Non-negativity).** $\Delta_i \geq 0$ for every $i$, with equality if and only if $Y^\ast \perp\!\!\!\perp X_i \mid (X_{S_{-i}}, H)$. Any negative empirical gap is therefore attributable to estimation and optimization error.
 
 **Proof.** Non-negativity and the equality condition are standard properties of conditional mutual information; the second statement follows by combining them with Theorem 2(c). $\blacksquare$
 
@@ -205,4 +205,4 @@ The gaps reported in Table VI of the paper are differences in nDCG@k, $T_1$-Reca
 
 *(ii)* Suppose the posterior factorizes as $\eta(x, h) = \sigma\big(g(x_{S_{-i}}, h) + c(x_i)\big)$ with $c$ non-constant. Then $\Delta_i > 0$, since $X_i$ shifts the posterior. But $c(x_i)$ is constant across candidates $h$ within an instance, so the induced within-instance ranking is unchanged and every ranking-determined $M$ is unaffected. All metrics used in the paper are computed within each instance and macro-averaged, and are therefore of this form. $\blacksquare$
 
-**Remark 3 (Estimation protocol).** Proposition 1 implies that ranking gaps can be used in only one direction: a gap establishes that a view contributes, whereas a gap indistinguishable from zero does not establish redundancy. Reporting validation cross-entropy for each ablation, in addition to the ranking metrics, would make the estimand of Theorem 2 directly observable. Because $\Delta_i$ is a difference of two trained models' risks, paired estimation is preferable: train the full and ablated models from the same seeds and report the paired difference with a bootstrap interval, which removes the seed-level variance common to both terms.
+**Remark 3 (Interpretation).** Under the Bayes-optimal assumptions of Proposition 1, a nonzero ranking gap witnesses a view contribution, whereas a zero gap does not establish redundancy.

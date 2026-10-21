@@ -57,7 +57,7 @@ def ordered_hunks(hunks: list[dict], keys: list[str], iid: str) -> list[dict]:
 
 
 def dataset_statistics(order, references, retained, tier3, split_of, repos):
-    fields = ("instances", "train", "val", "test", "gold_hunks",
+    fields = ("instances", "train", "val", "test", "reference_hunks",
               "T1", "T2", "T3_hunks", "T3_instances")
     per_repo = {}
     for iid in order:
@@ -65,7 +65,7 @@ def dataset_statistics(order, references, retained, tier3, split_of, repos):
         counts = per_repo.setdefault(name, dict.fromkeys(fields, 0))
         counts["instances"] += 1
         counts[split_of[iid]] += 1
-        counts["gold_hunks"] += references[iid]
+        counts["reference_hunks"] += references[iid]
         counts["T1"] += sum(h["tier_label"] == 1 for h in retained.get(iid, []))
         counts["T2"] += sum(h["tier_label"] == 2 for h in retained.get(iid, []))
         counts["T3_hunks"] += len(tier3.get(iid, []))
@@ -222,10 +222,10 @@ def main() -> None:
     generator = "Haiku" if "haiku" in (protocol.get("model") or "").lower() else "LLM"
     manifest = {
         "protocol": "T1/T2 = LLM-generated hunks matched to reference-patch hunks "
-                    f"(same file, start line within {args.tolerance} lines of the gold hunk), "
+                    f"(same file, start line within {args.tolerance} lines of the reference hunk), "
                     "T1 if the file is statically linked to a fail-to-pass test, else T2; "
                     f"T3 = {generator}-generated hunks starting >= {args.tolerance} lines "
-                    "from every gold hunk in the same file (or in another file)",
+                    "from every reference hunk in the same file (or in another file)",
         "generator": f"{protocol.get('model')}, temperature {protocol.get('temperature')}, "
                      f"max_tokens {protocol.get('max_tokens')}",
         "total": total,

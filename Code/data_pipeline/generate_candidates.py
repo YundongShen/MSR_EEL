@@ -1,21 +1,21 @@
-"""Generate candidate patches with an LLM (one generation per SWE-bench issue).
+"""Generate candidate patches with an LLM.
 
 For each SWE-bench instance:
   1. Build the prompt: issue text + code context.  The context is centred on the hunks of
      the reference patch and the prompt names the reference patch's files ("The file(s) to
      modify are: ...").
-  2. Call the LLM with the unconstrained prompt: "Fix the bug. Make any changes necessary."
+  2. Call the LLM with _PATCH_SYSTEM and the user prompt ending in "Fix the issue."
   3. Read the proposed changes from the response.
   4. Append the extracted diff and generation parameters to the generations file.
      Nothing is labelled here.
 
 Retained / non-retained (Tier 1/2/3) labels are derived from the generations by
 data_pipeline/build_dataset.py, so the labelling can be redone without calling the API again.
-For an independent extra sample of the same model, run again with a different
---generations file and pass all files to build_dataset.py.
+Repeated per-issue sampling and hunk merging are handled by sample_haiku_merge.py,
+which calls the same generate() function.
 
 Paper protocol: --model claude-haiku-4-5-20251001, temperature 0.7, max tokens 4096,
-one prompt for every instance.
+the same prompt template and settings across sampling attempts.
 
 Usage:
   # Smoke test (5 sympy instances):

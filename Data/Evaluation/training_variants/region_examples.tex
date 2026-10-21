@@ -22,19 +22,21 @@ The hunk replaces \texttt{IOError} with \texttt{OSError}, as requested.
 R2 contains hunks with high REQ and ORIG similarity and low TEST similarity.
 
 \smallskip
-\noindent\textit{Requirement (django\#10924):}
-\texttt{FilePathField} should accept a callable for its \texttt{path} argument, so that the file location can be resolved on each machine.
+\noindent\textit{Requirement (django\#11905):}
+The \texttt{\_\_isnull} lookup should reject non-boolean values instead of silently accepting truthy or falsey values.
 
 \begin{lstlisting}
-# django/db/models/fields/__init__.py (FilePathField.formfield)
-- 'path': self.path,
-+ 'path': self._get_path(),
+# django/db/models/lookups.py (IsNull)
++ def __init__(self, lhs, rhs):
++     super().__init__(lhs, rhs)
++     if not hasattr(self.rhs, 'resolve_expression') and not isinstance(self.rhs, bool):
++         raise TypeError("The value of an isnull lookup must be a boolean.")
 \end{lstlisting}
 
 \noindent
-$s_r=0.87$, $s_t=0.00$, and $s_o=0.98$.
+$s_r=0.73$, $s_t=0.22$, and $s_o=0.91$.
 
-The hunk replaces direct access to \texttt{self.path} with a call to \texttt{self.\_get\_path()}. Both REQ and ORIG similarities exceed their thresholds.
+The hunk adds a type check on the right-hand value to the existing \texttt{IsNull} lookup. Both REQ and ORIG similarities exceed their thresholds.
 
 \paragraph{R3 --- Requirement-Oriented \textnormal{($s_r>\tau_r$)}}
 

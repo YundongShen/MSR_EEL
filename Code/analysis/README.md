@@ -5,7 +5,9 @@ Commands for these analyses are in the
 
 ## Django figures and region statistics
 
-The Django scripts select all 849 Django issues.
+The Django region analysis uses all 849 issues (681 training, 87 validation,
+and 81 test issues) to characterize the learned representation across
+repository views.
 
 Region percentages are computed among retained T1/T2 hunks.
 The per-hunk scores and run log are in

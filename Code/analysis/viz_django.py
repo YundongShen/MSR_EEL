@@ -1,6 +1,6 @@
 """Generate side-by-side 3D UMAP comparing M0 (untrained) vs M2 (trained).
 
-UMAP is fitted on HUNK embeddings only for each model independently.
+UMAP is fitted on M0 HUNK embeddings and transforms both models' entity vectors.
 ORIG background = ALL source units pooled across all instances (~17k vectors).
 Tiers simplified to T1/T2/T3 (no 2a/2b split).
 
@@ -312,10 +312,9 @@ def main() -> None:
     # T3 HUNKs pushed away from each instance's REQ → scatter differently from retained.
     print("Projecting M2 entities into M0 UMAP space …")
     ch2    = r0.transform(h2)
-    # Anchors (REQ/TEST/ORIG) encode same text → use M0 coordinates as background
-    creq2  = creq0
-    ctest2 = ctest0
-    corig2 = corig0
+    creq2  = r0.transform(req2)
+    ctest2 = r0.transform(test2)
+    corig2 = r0.transform(orig2)
 
     # --- Side-by-side 3D plot ---
     # Original figure size/layout is untouched. The only changes from the

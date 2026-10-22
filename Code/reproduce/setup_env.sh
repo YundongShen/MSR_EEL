@@ -14,11 +14,24 @@ fi
 command -v "$PYTHON_BIN" >/dev/null
 cd "$CODE_ROOT"
 
+if [[ "$MODE" == all ]]; then
+    "$PYTHON_BIN" -m venv env
+    source env/bin/activate
+    python -m pip install --upgrade pip
+    python -m pip install torch==2.5.1 --index-url "${EEL_TORCH_INDEX_URL:-https://download.pytorch.org/whl/cu121}"
+    python -m pip install -r reproduce/requirements.txt
+    python -m pip check
+    PYTHON_BIN="$CODE_ROOT/env/bin/python"
+elif [[ "$MODE" == --data-only && -x "$CODE_ROOT/env/bin/python" ]]; then
+    PYTHON_BIN="$CODE_ROOT/env/bin/python"
+fi
+
 "$PYTHON_BIN" - "$CODE_ROOT" "$DATA_ROOT" "$MODE" <<'PY'
-import gzip
 import json
 import shutil
+import subprocess
 import sys
+import tempfile
 from collections import Counter
 from pathlib import Path
 
@@ -27,7 +40,7 @@ if sys.version_info < (3, 11):
 code, data, mode = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
 source = data / "eel_dataset"
 names = ("splits.json", "eval_sets.json", "llm_t12_hunks.jsonl",
-         "tier3_hunks.jsonl", "dataset_manifest.json", "instances_full.jsonl.gz")
+         "tier3_hunks.jsonl", "dataset_manifest.json")
 for name in names:
     if not (source / name).is_file():
         raise SystemExit(f"Missing {source / name}; use the replication package's Data directory")
@@ -74,18 +87,6 @@ if eligible != set(evaluation["eval_instances"]) or t2 != set(evaluation["t2_rec
 if sum(i.startswith("django__") and bool(h) and bool(retained.get(i)) for i, h in tier3.items()) != 204:
     raise SystemExit("Unexpected eligible Django issue count")
 
-seen, django = set(), 0
-with gzip.open(source / "instances_full.jsonl.gz", "rt") as handle:
-    for line in handle:
-        if not line.strip():
-            continue
-        iid = json.loads(line)["instance_id"]
-        if iid in seen:
-            raise SystemExit(f"Duplicate parsed issue: {iid}")
-        seen.add(iid)
-        django += iid.startswith("django__")
-if seen != all_ids or django != 849:
-    raise SystemExit("Parsed instances do not match the splits and repository counts")
 print("Data checked: 2291 issues; T1=3354, T2=5869, T3=1257; evaluation=82, T2-recall=47")
 if mode == "--check":
     raise SystemExit(0)
@@ -103,27 +104,42 @@ if generations.is_file():
 raw = data / "swebench/swebench_full_instances.jsonl.gz"
 if raw.is_file():
     shutil.copyfile(raw, code / "data/raw" / raw.name)
-with gzip.open(source / "instances_full.jsonl.gz", "rb") as src, \
-     (processed / "instances_full.jsonl").open("wb") as full, \
+
+downloaded = code / "data/raw/swebench_full_instances.jsonl"
+subprocess.run([sys.executable, "data_pipeline/download_swebench.py",
+                "--output", str(downloaded), "--repos-dir", str(code / "data/repos"),
+                "--splits", str(source / "splits.json")], check=True)
+with tempfile.TemporaryDirectory(dir=processed) as tmp:
+    parsed = Path(tmp) / "instances.jsonl"
+    subprocess.run([sys.executable, "data_pipeline/parse_instances.py",
+                    "--input", str(downloaded), "--output", str(parsed)], check=True)
+    seen, django = set(), 0
+    full_path = Path(tmp) / "instances_full.jsonl"
+    with parsed.open("rb") as src, full_path.open("wb") as full:
+        for line in src:
+            if not line.strip():
+                continue
+            iid = json.loads(line)["instance_id"]
+            if iid not in all_ids:
+                continue
+            if iid in seen:
+                raise SystemExit(f"Duplicate parsed issue: {iid}")
+            seen.add(iid)
+            django += iid.startswith("django__")
+            full.write(line)
+    if seen != all_ids or django != 849:
+        raise SystemExit("Parsed instances do not match the splits and repository counts")
+    full_path.replace(processed / "instances_full.jsonl")
+
+with (processed / "instances_full.jsonl").open("rb") as src, \
      (processed / "instances_django_only.jsonl").open("wb") as dj, \
      (processed / "instances_non_django.jsonl").open("wb") as other, \
      (processed / "instances_sympy_only.jsonl").open("wb") as sympy, \
      (processed / "instances_non_sympy.jsonl").open("wb") as non_sympy:
     for line in src:
-        full.write(line)
         if line.strip():
             iid = json.loads(line)["instance_id"]
             (dj if iid.startswith("django__") else other).write(line)
             (sympy if iid.startswith("sympy__") else non_sympy).write(line)
 print("Runtime data prepared from", source)
 PY
-
-if [[ "$MODE" != all ]]; then
-    exit 0
-fi
-"$PYTHON_BIN" -m venv env
-source env/bin/activate
-python -m pip install --upgrade pip
-python -m pip install torch==2.5.1 --index-url "${EEL_TORCH_INDEX_URL:-https://download.pytorch.org/whl/cu121}"
-python -m pip install -r reproduce/requirements.txt
-python -m pip check

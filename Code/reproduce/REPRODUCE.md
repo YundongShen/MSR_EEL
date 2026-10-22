@@ -20,9 +20,9 @@ The supported environment is Python 3.11 or 3.12 with the dependencies in
 CUDA 12.1 wheels. Set
 `EEL_TORCH_INDEX_URL=https://download.pytorch.org/whl/cpu` for CPU-only setup.
 
-`bash reproduce/setup_env.sh --check` checks the published data without writing
-files or installing packages. `--data-only` prepares data without installing an
-environment. For a separate Code checkout, set `EEL_DATA_ROOT` to the final
+`bash reproduce/setup_env.sh --check` checks the published candidates and splits
+without writing files or installing packages. `--data-only` prepares data using
+the installed environment. For a separate Code checkout, set `EEL_DATA_ROOT` to the final
 submission's `Data` directory. The setup checks:
 
 | Item | Count |
@@ -33,9 +33,11 @@ submission's `Data` directory. The setup checks:
 | Core evaluation issues / T2-Recall issues | 82 / 47 |
 | Django issues / eligible Django issues | 849 / 204 |
 
-Setup decompresses the parsed instances into `data/processed/`, copies the fixed
-splits and generated candidates, and creates Django and SymPy instance subsets
-and their complements. Model candidates are read from `llm_t12_hunks.jsonl` and
+Setup downloads SWE-bench Full and repository snapshots at their base commits,
+extracts the requirements, tests, and source units for the fixed issue splits
+into `data/processed/`, and copies the generated candidates. Internet access and
+Git are required. Setup also creates Django and SymPy instance subsets and their
+complements. Model candidates are read from `llm_t12_hunks.jsonl` and
 `tier3_hunks.jsonl`.
 
 `Retained-H` denotes LLM-generated hunks matched to the reference patch

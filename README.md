@@ -11,7 +11,7 @@ EEL maps requirements (REQ), failing tests (TEST), unmodified source units (ORIG
 | [`Code/`](Code/) | Model, training, evaluation, baselines, and analysis scripts |
 | [`Code/data_pipeline/`](Code/data_pipeline/) | Candidate generation, hunk matching, and dataset construction |
 | [`Code/reproduce/REPRODUCE.md`](Code/reproduce/REPRODUCE.md) | Environment setup and experiment commands |
-| [`Data/eel_dataset/`](Data/eel_dataset/) | Parsed instances, generated candidates, and fixed data splits |
+| [`Data/eel_dataset/`](Data/eel_dataset/) | Generated candidates and fixed data splits |
 | [`Data/swebench/`](Data/swebench/) | SWE-bench source inputs |
 | [`Data/Evaluation/`](Data/Evaluation/) | Training logs, evaluation results, and supporting analyses |
 
@@ -27,7 +27,7 @@ The core dataset is based on SWE-bench Full and contains 2,291 issues from 12 Py
 | T3: unmatched generated hunks | 1,257 |
 | Test issues containing both retained and T3 hunks | 82 |
 
-`Retained-H` denotes generated T1 and T2 hunks. These candidates are stored in `llm_t12_hunks.jsonl`; T3 candidates are stored in `tier3_hunks.jsonl`. `splits.json` defines the fixed issue-level split. The parsed requirements, tests, and source units are stored in `instances_full.jsonl.gz`.
+`Retained-H` denotes generated T1 and T2 hunks. These candidates are stored in `llm_t12_hunks.jsonl`; T3 candidates are stored in `tier3_hunks.jsonl`. `splits.json` defines the fixed issue-level split. Setup extracts requirements, tests, and source units from SWE-bench Full.
 
 ## Getting started
 
@@ -40,7 +40,7 @@ source env/bin/activate
 export PYTHONHASHSEED=42
 ```
 
-Setup installs the dependencies and prepares runtime data from the adjacent `Data` directory. Set `EEL_PYTHON_BIN` if the interpreter is not available as `python3.12`. To check the published data without installing dependencies, run `bash reproduce/setup_env.sh --check` from `Code/`.
+Setup installs the dependencies, downloads SWE-bench Full and repository snapshots at their base commits, and prepares runtime inputs using the published candidates and fixed splits. Internet access and Git are required. Set `EEL_PYTHON_BIN` if the interpreter is not available as `python3.12`. To check the published candidates and splits without installing dependencies, run `bash reproduce/setup_env.sh --check` from `Code/`.
 
 Train the standard EEL configuration (M2):
 

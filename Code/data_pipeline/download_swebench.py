@@ -245,6 +245,7 @@ def main() -> None:
     parser.add_argument("--repos-dir", default="data/repos")
     parser.add_argument("--max", type=int, default=None, help="Limit number of instances")
     parser.add_argument("--split", default="test", help="HuggingFace split name")
+    parser.add_argument("--splits", default=None, help="Fixed issue split JSON")
     parser.add_argument(
         "--dataset", default=HF_DATASET,
         help="HuggingFace dataset name (default: princeton-nlp/SWE-bench)",
@@ -279,6 +280,11 @@ def main() -> None:
 
     log.info("Loading %s …", args.dataset)
     ds = load_dataset(args.dataset, split=args.split)
+
+    if args.splits:
+        splits = json.loads(Path(args.splits).read_text())
+        ids = set().union(*(splits[f"{split}_ids"] for split in ("train", "val", "test")))
+        ds = [r for r in ds if r["instance_id"] in ids]
 
     # Optionally filter to a specific repo.
     if args.repo_filter:

@@ -1,6 +1,6 @@
 ===== TRAIN M2 =====
 21:55:42 [INFO] Device: cuda
-21:55:42 [INFO] Loading dataset from /workspace/eel/generalization_rebuild/ft_noformat/instances_all_1cdf6f2_oldschema.jsonl
+21:55:42 [INFO] Loading dataset from data/processed/instances_full.jsonl
 21:55:45 [INFO] Dataset stats: {'total_pairs': 250734, 'by_pair_type': {'req_hunk': 9223, 'orig_hunk': 15815, 'req_orig': 218166, 'req_test': 7530}, 'by_tier': {1: 9257, 2: 15781}, 'unique_instances': 2291}
 21:55:45 [INFO] Splits — train: 207834  val: 20446
 The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
@@ -486,7 +486,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 07:17:16 [INFO] Saved checkpoint → /tmp/m2new_17788615/ckpt/epoch_003.pt  (val_loss=4.6805)
 ===== RESUME M2 =====
 20:10:33 [INFO] Device: cuda
-20:10:33 [INFO] Loading dataset from /workspace/eel/generalization_rebuild/ft_noformat/instances_all_1cdf6f2_oldschema.jsonl
+20:10:33 [INFO] Loading dataset from data/processed/instances_full.jsonl
 20:10:36 [INFO] Dataset stats: {'total_pairs': 250734, 'by_pair_type': {'req_hunk': 9223, 'orig_hunk': 15815, 'req_orig': 218166, 'req_test': 7530}, 'by_tier': {1: 9257, 2: 15781}, 'unique_instances': 2291}
 20:10:36 [INFO] Splits — train: 207834  val: 20446
 The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`

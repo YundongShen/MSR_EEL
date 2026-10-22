@@ -1,5 +1,5 @@
 ===== TRAIN cross-encoder (new_with_cross, cross negatives 3) Thu Oct 15 21:55:28 CEST 2026 =====
-21:55:41 [INFO] training data: /workspace/eel/generalization_rebuild/ft_noformat/instances_all_1cdf6f2_oldschema.jsonl | /workspace/eel/generalization_rebuild/submit_1cdf6f2/tier3_hunks.jsonl
+21:55:41 [INFO] training data: data/processed/instances_full.jsonl | data/cache/tier3_hunks.jsonl
 21:55:44 [INFO] train issues 1833 (with Tier-3 581), val groups 786, cross negatives 3
 Some weights of RobertaForSequenceClassification were not initialized from the model checkpoint at microsoft/unixcoder-base and are newly initialized: ['classifier.dense.bias', 'classifier.dense.weight', 'classifier.out_proj.bias', 'classifier.out_proj.weight']
 21:55:47 [INFO] train groups per epoch 7573, optimizer steps 2841

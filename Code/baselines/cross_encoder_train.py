@@ -91,8 +91,6 @@ def main():
     tr_i, tr_t3 = load(set(splits["train_ids"]))
     va_i, va_t3 = load(set(splits["val_ids"]))
     val = groups(va_i, va_t3, args.cross_negatives, random.Random(7))
-    log.info("train issues %d (with Tier-3 %d), val groups %d, cross negatives %d",
-             len(tr_i), sum(bool(tr_t3.get(i)) for i in tr_i), len(val), args.cross_negatives)
 
     n_groups = len(groups(tr_i, tr_t3, args.cross_negatives, random.Random(0)))
     if not n_groups or not val:
@@ -103,7 +101,6 @@ def main():
     steps = math.ceil(n_groups / args.accum) * args.epochs
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = get_linear_schedule_with_warmup(opt, int(0.1 * steps), steps)
-    log.info("train groups per epoch %d, optimizer steps %d", n_groups, steps)
 
     best = float("inf")
     for epoch in range(1, args.epochs + 1):

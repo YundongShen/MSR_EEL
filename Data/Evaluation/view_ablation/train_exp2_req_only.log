@@ -1,7 +1,5 @@
 13:03:42 [INFO] Device: cuda
 13:03:42 [INFO] Loading dataset from data/processed/instances_full.jsonl
-13:03:44 [INFO] Dataset stats: {'total_pairs': 9223, 'by_pair_type': {'req_hunk': 9223}, 'by_tier': {1: 3354, 2: 5869}, 'unique_instances': 2291}
-13:03:44 [INFO] Splits — train: 7573  val: 788
 13:03:46 [INFO] Encoder parameters: 126,720,768
 13:03:46 [INFO] Loaded Tier-3 hard negatives: 743 instances (applied to req_hunk + orig_hunk)
 13:03:46 [INFO] === Epoch 1 / 10 ===

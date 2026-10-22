@@ -1,7 +1,5 @@
 17:17:58 [INFO] Device: cuda
 17:17:58 [INFO] Loading dataset from data/processed/instances_full.jsonl
-17:18:00 [INFO] Dataset stats: {'total_pairs': 250734, 'by_pair_type': {'req_hunk': 9223, 'orig_hunk': 15815, 'req_orig': 218166, 'req_test': 7530}, 'by_tier': {1: 9257, 2: 15781}, 'unique_instances': 2291}
-17:18:00 [INFO] Splits — train: 207834  val: 20446
 17:18:03 [INFO] Encoder parameters: 126,720,768
 17:18:03 [INFO] Loaded Tier-3 hard negatives: 743 instances (applied to req_hunk + orig_hunk)
 17:18:03 [INFO] Built same-repo cross-issue hard-neg index: 1833 instances with cross-issue pool

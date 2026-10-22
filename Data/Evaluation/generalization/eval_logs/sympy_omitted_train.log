@@ -2,8 +2,6 @@ NVIDIA A100-SXM4-80GB, 81920 MiB
 ===== leave-sympy-out =====
 16:37:01 [INFO] Device: cuda
 16:37:01 [INFO] Loading dataset from data/processed/instances_non_sympy.jsonl
-16:37:03 [INFO] Dataset stats: {'total_pairs': 188162, 'by_pair_type': {'req_hunk': 7331, 'orig_hunk': 12480, 'req_orig': 161470, 'req_test': 6881}, 'by_tier': {1: 5118, 2: 14693}, 'unique_instances': 1906}
-16:37:03 [INFO] Splits — train: 157654  val: 15242
 The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
 16:37:08 [INFO] Encoder parameters: 126,720,768
 16:37:08 [INFO] Loaded Tier-3 hard negatives: 743 instances (applied to req_hunk + orig_hunk)

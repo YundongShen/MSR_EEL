@@ -1,7 +1,5 @@
 16:40:37 [INFO] Device: cuda
 16:40:37 [INFO] Loading dataset from data/processed/instances_full.jsonl
-16:40:39 [INFO] Dataset stats: {'total_pairs': 250734, 'by_pair_type': {'req_hunk': 9223, 'orig_hunk': 15815, 'req_orig': 218166, 'req_test': 7530}, 'by_tier': {1: 9257, 2: 15781}, 'unique_instances': 2291}
-16:40:39 [INFO] Splits — train: 207834  val: 20446
 16:40:42 [INFO] Encoder parameters: 126,720,768
 16:40:42 [INFO] === Epoch 1 / 10 ===
 16:41:41 [INFO] step=50  loss=3.1194  τ=0.070  lr=5.00e-06  [req_hunk=0.328  req_orig=1.793  orig_hunk=0.342  req_test=0.657]

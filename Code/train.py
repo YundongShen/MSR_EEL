@@ -369,10 +369,7 @@ def main(cfg: Config = default_config) -> None:
         max_req_chars=cfg.data.max_req_chars,
         seed=cfg.train.seed,
     )
-    log.info("Dataset stats: %s", full_dataset.stats())
-
     train_set, val_set, _ = full_dataset.load_splits("data/processed/splits.json")
-    log.info("Splits — train: %d  val: %d", len(train_set), len(val_set))
 
     # Fail loudly instead of training a hunk-less model (e.g. a wrong or empty retained-hunk file).
     train_pair_counts = train_set.stats()["by_pair_type"]

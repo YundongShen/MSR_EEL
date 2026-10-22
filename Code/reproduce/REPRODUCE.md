@@ -200,8 +200,8 @@ python evaluate.py --exp retrieval --checkpoint checkpoints/m2/best.pt --instanc
 
 ## Candidate sampling and rebuilding
 
-Rebuild the published candidate files from the archived generations and raw
-source inputs:
+After setup, rebuild the published candidate files from the archived generations
+and downloaded SWE-bench source records:
 
 ```bash
 python data_pipeline/build_dataset.py --generations data/cache/haiku_generations.jsonl.gz --source-instances data/raw/swebench_full_instances.jsonl --instances data/processed/instances_full.jsonl --splits data/processed/splits.json --retained-out data/cache/rebuilt_llm_t12_hunks.jsonl --tier3-out data/cache/rebuilt_tier3_hunks.jsonl --manifest data/cache/rebuilt_dataset_manifest.json

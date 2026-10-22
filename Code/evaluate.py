@@ -598,7 +598,7 @@ def retrieval_candidates(
     """Candidate set of the retrieval experiment, shared by EEL (run_retrieval) and every baseline.
 
     Yields ``(inst, candidates, tiers, tiebreaks)`` for each instance of ``split`` that has a retained and a
-    Tier-3 candidate.  ``candidates`` = [(text, tier, hunk_dict, orig_override|None)]: retained (T1/T2),
+    Tier-3 candidate.  ``candidates`` = [(text, tier, hunk_dict)]: retained (T1/T2),
     Tier-3 and, with ``repo_pool``, up to ``repo_pool_max`` same-repo retained hunks of other instances of the
     split as tier-0 distractors.  ``tiebreaks`` = one random number per candidate that breaks score ties.
     All randomness comes from one ``random.Random(42)`` consumed in a fixed order, so every scorer sees the
@@ -613,9 +613,7 @@ def retrieval_candidates(
 
     # Build repo-level distractor pool: same repo, different instance, retained hunks → tier 0
     # The pool comes from the instances of the evaluated split only: no leakage from training data.
-    # Each distractor keeps the ORIG unit(s) of the instance it comes from: like every candidate it is scored
-    # against the original code it modifies (o(h) in the paper), not against the evaluated issue's files.
-    repo_hunk_pool: dict[str, list[tuple[str, str, dict, list[str]]]] = {}
+    repo_hunk_pool: dict[str, list[tuple[str, str, dict]]] = {}
     if repo_pool:
         log.info("Building repo-level distractor pool (%s split only) …", split)
         for inst in instances:  # already filtered to the split above
@@ -624,8 +622,7 @@ def retrieval_candidates(
             for hunk in retained_hunks(inst, cfg):
                 text = _render_hunk(hunk)
                 if text.strip():
-                    own_orig = [u["code"] for u in _units_for_hunk(hunk, inst.get("source_units", [])) if u.get("code")]
-                    repo_hunk_pool.setdefault(repo, []).append((iid, text, hunk, own_orig))
+                    repo_hunk_pool.setdefault(repo, []).append((iid, text, hunk))
         log.info("Repo pool: %d repos, %d total hunks",
                  len(repo_hunk_pool), sum(len(v) for v in repo_hunk_pool.values()))
 
@@ -633,29 +630,23 @@ def retrieval_candidates(
     for inst in instances:
         iid = inst.get("instance_id", "")
 
-        # (text, tier, hunk_dict, orig_override|None)
-        # orig_override=None  → the hunk belongs to this instance: use its source_units at score time
-        # orig_override=list  → a distractor: the ORIG unit(s) of the instance it comes from
-        candidates: list[tuple[str, int, dict, list[str] | None]] = []
+        candidates: list[tuple[str, int, dict]] = []
         for hunk in retained_hunks(inst, cfg):
             text = _render_hunk(hunk)
             if text.strip():
-                candidates.append((text, hunk.get("tier_label") or 1, hunk, None))
+                candidates.append((text, hunk.get("tier_label") or 1, hunk))
         for hunk in tier3_lookup.get(iid, []):
             text = _render_hunk(hunk)
             if text.strip():
-                candidates.append((text, 3, hunk, None))
+                candidates.append((text, 3, hunk))
 
-        # Same-repo cross-issue retained hunks as tier-0 distractors.  They get the ORIG unit of their OWN
-        # instance, so the ORIG view cannot separate them from the real candidates by mere file membership
-        # (a distractor scored against this issue's files would always get ORIG = 0).
         if repo_pool:
             repo = iid.split("__")[0]
-            pool = [(t, h, o) for (eid, t, h, o) in repo_hunk_pool.get(repo, []) if eid != iid]
+            pool = [(t, h) for (eid, t, h) in repo_hunk_pool.get(repo, []) if eid != iid]
             if len(pool) > repo_pool_max:
                 pool = rng.sample(pool, repo_pool_max)
-            for text, hunk, own_orig in pool:
-                candidates.append((text, 0, hunk, own_orig))
+            for text, hunk in pool:
+                candidates.append((text, 0, hunk))
 
         if len(candidates) < 2:
             continue
@@ -711,8 +702,7 @@ def run_retrieval(
 
         hunk_texts = [c[0] for c in candidates]
         hunk_orig_texts = [
-            c[3] if c[3] is not None
-            else [u["code"] for u in _units_for_hunk(c[2], source_units) if u.get("code")]
+            [u["code"] for u in _units_for_hunk(c[2], source_units) if u.get("code")]
             for c in candidates
         ]
 

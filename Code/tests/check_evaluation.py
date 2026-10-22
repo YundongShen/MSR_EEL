@@ -48,15 +48,15 @@ def _write(path: Path, records: list[dict]) -> str:
 class _Recorder:
     """Stub encoder: deterministic pseudo-random similarities per text; records the ORIG texts it was given."""
     def __init__(self):
-        self.orig_by_hunk: dict[str, list[str]] = {}
+        self.orig_by_hunk: dict[tuple[str, str], list[str]] = {}
 
     @staticmethod
     def _r(text: str, salt: str) -> float:
         return int(hashlib.md5((salt + text).encode()).hexdigest()[:8], 16) / 0xFFFFFFFF
 
     def similarity_components(self, hunk_texts, req_texts, test_texts, orig_texts, device, use_projection=True):
-        for h, o in zip(hunk_texts, orig_texts):
-            self.orig_by_hunk[h] = list(o)
+        for req, h, o in zip(req_texts, hunk_texts, orig_texts):
+            self.orig_by_hunk[req, h] = list(o)
         n = len(hunk_texts)
         return (torch.tensor([self._r(h, "q") for h in hunk_texts]),
                 torch.tensor([self._r(h, "t") for h in hunk_texts]),
@@ -87,20 +87,26 @@ class _World:
 
 
 # ---------------------------------------------------------------------------
-def check_distractor_orig_is_its_own() -> None:
+def check_distractor_orig_uses_evaluated_issue() -> None:
     with tempfile.TemporaryDirectory() as d, _World(Path(d), n_instances=3) as w:
+        w.instances[0]["source_units"].append({
+            **w.instances[1]["source_units"][0], "code": "MATCH_IN_EVALUATED_ISSUE",
+        })
         enc = _Recorder()
         evaluate.run_retrieval(w.cfg, enc, torch.device("cpu"), repo_pool=True)
-        seen = {}
-        for h, origs in enc.orig_by_hunk.items():
-            for k in range(3):
-                if f"ret{k}_" in h:
-                    seen.setdefault(k, set()).update(origs)
-        # every retained hunk of instance k was scored (as a candidate of k, and as a distractor of the others)
-        # and each time against instance k's own unit: never with an empty ORIG list, never with another issue's unit
-        for k in range(3):
-            assert seen[k] == {f"UNIT_OF_repo__x-{k}"}, f"instance {k}: ORIG texts were {seen[k]}"
-        assert all(origs for h, origs in enc.orig_by_hunk.items() if "ret" in h), "a distractor got ORIG = []"
+        checked = 0
+        for (req, h), origs in enc.orig_by_hunk.items():
+            for target in range(3):
+                if req != w.instances[target]["requirement"]:
+                    continue
+                for source in range(3):
+                    if f"ret{source}_" not in h:
+                        continue
+                    expected = ([f"UNIT_OF_repo__x-{target}"] if source == target else
+                                ["MATCH_IN_EVALUATED_ISSUE"] if target == 0 and source == 1 else [])
+                    assert origs == expected, (target, source, origs, expected)
+                    checked += 1
+        assert checked == 18, checked
 
 
 def check_grid_equals_single_runs() -> None:
@@ -157,7 +163,7 @@ def check_weights_bound_to_checkpoint() -> None:
         assert "NOT selected" in src, "a missing weights file must be reported"
 
 
-CHECKS = [check_distractor_orig_is_its_own, check_grid_equals_single_runs, check_select_best_and_grid,
+CHECKS = [check_distractor_orig_uses_evaluated_issue, check_grid_equals_single_runs, check_select_best_and_grid,
           check_weights_bound_to_checkpoint]
 
 if __name__ == "__main__":

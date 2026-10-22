@@ -10,8 +10,6 @@ and 81 test issues) to characterize the learned representation across
 repository views.
 
 Region percentages are computed among retained T1/T2 hunks.
-The run log is in
-[`region_analysis.log`](../../Data/Evaluation/training_variants/region_analysis.log).
 
 ## Hunk similarity
 

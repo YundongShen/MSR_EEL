@@ -484,10 +484,6 @@ The new embeddings will be initialized from a multivariate normal distribution t
 07:12:35 [INFO] step=23400  loss=0.6657  τ=0.062  lr=1.59e-05  [req_orig=0.151  req_hunk=0.000  orig_hunk=0.204  req_test=0.311]
 07:17:14 [INFO] Epoch 3 — train_loss=0.4825  val_loss=4.6805
 07:17:16 [INFO] Saved checkpoint → /tmp/m2new_17788615/ckpt/epoch_003.pt  (val_loss=4.6805)
-07:17:16 [INFO] === Epoch 4 / 10 ===
-07:17:35 [INFO] step=23450  loss=0.1715  τ=0.062  lr=1.59e-05  [req_orig=0.065  req_test=0.106  req_hunk=0.000  orig_hunk=0.000]
-epoch 3 saved, stopping training Fri Oct 16 07:18:40 CEST 2026
-best.pt: epoch 1 val_loss 4.6404
 ===== RESUME M2 =====
 20:10:33 [INFO] Device: cuda
 20:10:33 [INFO] Loading dataset from /workspace/eel/generalization_rebuild/ft_noformat/instances_all_1cdf6f2_oldschema.jsonl

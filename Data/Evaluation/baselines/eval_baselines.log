@@ -7,7 +7,7 @@
 15:38:28 [INFO]   nDCG@k_retained  mean=0.1279  n=82
 15:38:28 [INFO]   T2-Recall    mean=0.1772  n=47
 15:38:28 [INFO]   Perfect-Sep  mean=0.2927  n=82
-15:38:28 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_codebert-base.json
+15:38:28 [INFO] Results saved → ../Data/Evaluation/baselines/baseline_pretrained_microsoft_codebert-base.json
 ===== graphcodebert-base (with T0) =====
 15:38:37 [INFO] Device: cuda
 15:38:37 [INFO] Loading tokenizer and model: microsoft/graphcodebert-base
@@ -18,7 +18,7 @@ Some weights of RobertaModel were not initialized from the model checkpoint at m
 15:39:06 [INFO]   nDCG@k_retained  mean=0.1275  n=82
 15:39:06 [INFO]   T2-Recall    mean=0.1736  n=47
 15:39:06 [INFO]   Perfect-Sep  mean=0.4024  n=82
-15:39:06 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_graphcodebert-base.json
+15:39:06 [INFO] Results saved → ../Data/Evaluation/baselines/baseline_pretrained_microsoft_graphcodebert-base.json
 ===== unixcoder-base (with T0) =====
 15:39:15 [INFO] Device: cuda
 15:39:15 [INFO] Loading tokenizer and model: microsoft/unixcoder-base
@@ -28,7 +28,7 @@ Some weights of RobertaModel were not initialized from the model checkpoint at m
 15:39:42 [INFO]   nDCG@k_retained  mean=0.3231  n=82
 15:39:42 [INFO]   T2-Recall    mean=0.3402  n=47
 15:39:42 [INFO]   Perfect-Sep  mean=0.2805  n=82
-15:39:42 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_unixcoder-base.json
+15:39:42 [INFO] Results saved → ../Data/Evaluation/baselines/baseline_unixcoder_req_hunk.json
 ===== codet5 (with T0) =====
 15:39:50 [INFO] Mode: codet5  Model: Salesforce/codet5p-110m-embedding
 15:39:51 [INFO] Loading bi-encoder: Salesforce/codet5p-110m-embedding
@@ -38,5 +38,5 @@ Some weights of RobertaModel were not initialized from the model checkpoint at m
 15:40:22 [INFO]   nDCG@k_retained  mean=0.4004  n=82
 15:40:22 [INFO]   T2-Recall    mean=0.4098  n=47
 15:40:22 [INFO]   Perfect-Sep  mean=0.2561  n=82
-15:40:22 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_codet5.json
+15:40:22 [INFO] Results saved → ../Data/Evaluation/baselines/baseline_codet5.json
 Done Thu Oct 15 15:40:44 CEST 2026

@@ -27,5 +27,5 @@
 11:11:57 [INFO] m2 ORIG-sim: Retained-H n=714 mean=0.8791 std=0.1161 | t3 n=134 mean=0.1677 std=0.1933
 11:11:57 [INFO] m2 Mann-Whitney U [Retained-H>t3]: U=94641  p=1.1904e-72  r=0.9784  ***
 11:11:57 [INFO] Δr=0.7220  Δmean_gap=0.6781
-11:11:57 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/exp3_analysis_1cdf6f2_m2new.json
+11:11:57 [INFO] Results saved → ../Data/Evaluation/training_variants/exp3_analysis.json
 Done Fri Oct 16 11:11:59 CEST 2026

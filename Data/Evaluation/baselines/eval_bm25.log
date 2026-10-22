@@ -4,4 +4,4 @@
 15:37:05 [INFO]   nDCG@k_retained  mean=0.2633  n=82
 15:37:05 [INFO]   T2-Recall    mean=0.3218  n=47
 15:37:05 [INFO]   Perfect-Sep  mean=0.2195  n=82
-15:37:05 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/baselineT0_bm25.json
+15:37:05 [INFO] Results saved → ../Data/Evaluation/baselines/baseline_bm25.json

@@ -7,5 +7,5 @@
 22:10:58 [INFO]   nDCG@k_retained  mean=0.6909  n=82
 22:10:58 [INFO]   T2-Recall    mean=0.6945  n=47
 22:10:58 [INFO]   Perfect-Sep  mean=0.8171  n=82
-22:10:58 [INFO] Results saved → /workspace/eel/generalization_rebuild/logs/tables_1cdf6f2/ce_trained_new_with_cross.json
+22:10:58 [INFO] Results saved → ../Data/Evaluation/baselines/baseline_cross_encoder.json
 Done Thu Oct 15 22:10:58 CEST 2026

@@ -101,10 +101,6 @@ for name in ("llm_t12_hunks.jsonl", "tier3_hunks.jsonl", "dataset_manifest.json"
 generations = source / "haiku_generations.jsonl.gz"
 if generations.is_file():
     shutil.copyfile(generations, cache / generations.name)
-raw = data / "swebench/swebench_full_instances.jsonl.gz"
-if raw.is_file():
-    shutil.copyfile(raw, code / "data/raw" / raw.name)
-
 downloaded = code / "data/raw/swebench_full_instances.jsonl"
 subprocess.run([sys.executable, "data_pipeline/download_swebench.py",
                 "--output", str(downloaded), "--repos-dir", str(code / "data/repos"),

@@ -122,7 +122,7 @@ def merge_sample(record: dict | None, inst: dict, result: dict, *, sample: int,
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--input", type=Path, default=ROOT.parent / "Data/swebench/swebench_full_instances.jsonl.gz")
+    parser.add_argument("--input", type=Path, default=ROOT / "data/raw/swebench_full_instances.jsonl")
     parser.add_argument("--generations", type=Path, default=ROOT.parent / "Data/eel_dataset/haiku_generations.jsonl.gz")
     parser.add_argument("--samples", type=int, default=1, help="Samples per batch")
     parser.add_argument("--run-id", help="Label for this sampling run")

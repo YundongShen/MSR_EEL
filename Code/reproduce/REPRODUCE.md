@@ -204,7 +204,7 @@ Rebuild the published candidate files from the archived generations and raw
 source inputs:
 
 ```bash
-python data_pipeline/build_dataset.py --generations data/cache/haiku_generations.jsonl.gz --source-instances data/raw/swebench_full_instances.jsonl.gz --instances data/processed/instances_full.jsonl --splits data/processed/splits.json --retained-out data/cache/rebuilt_llm_t12_hunks.jsonl --tier3-out data/cache/rebuilt_tier3_hunks.jsonl --manifest data/cache/rebuilt_dataset_manifest.json
+python data_pipeline/build_dataset.py --generations data/cache/haiku_generations.jsonl.gz --source-instances data/raw/swebench_full_instances.jsonl --instances data/processed/instances_full.jsonl --splits data/processed/splits.json --retained-out data/cache/rebuilt_llm_t12_hunks.jsonl --tier3-out data/cache/rebuilt_tier3_hunks.jsonl --manifest data/cache/rebuilt_dataset_manifest.json
 ```
 
 Training and evaluation above use the published candidates without rebuilding
@@ -216,9 +216,9 @@ matches with the smallest start-line distances to reference hunks in the same
 file are retained. Sampling resumes from the saved issue records.
 
 ```bash
-python data_pipeline/sample_haiku_merge.py --input data/raw/swebench_full_instances.jsonl.gz --generations data/cache/new_haiku_generations.jsonl.gz --model claude-haiku-4-5-20251001 --temperature 0.7 --max-tokens 4096 --samples 1 --run-id new-sampling --dry-run
-python data_pipeline/sample_haiku_merge.py --input data/raw/swebench_full_instances.jsonl.gz --generations data/cache/new_haiku_generations.jsonl.gz --model claude-haiku-4-5-20251001 --temperature 0.7 --max-tokens 4096 --samples 1 --run-id new-sampling
-python data_pipeline/build_dataset.py --generations data/cache/new_haiku_generations.jsonl.gz --source-instances data/raw/swebench_full_instances.jsonl.gz --instances data/processed/instances_full.jsonl --splits data/processed/splits.json --retained-out data/cache/new_llm_t12_hunks.jsonl --tier3-out data/cache/new_tier3_hunks.jsonl --manifest data/cache/new_dataset_manifest.json
+python data_pipeline/sample_haiku_merge.py --input data/raw/swebench_full_instances.jsonl --generations data/cache/new_haiku_generations.jsonl.gz --model claude-haiku-4-5-20251001 --temperature 0.7 --max-tokens 4096 --samples 1 --run-id new-sampling --dry-run
+python data_pipeline/sample_haiku_merge.py --input data/raw/swebench_full_instances.jsonl --generations data/cache/new_haiku_generations.jsonl.gz --model claude-haiku-4-5-20251001 --temperature 0.7 --max-tokens 4096 --samples 1 --run-id new-sampling
+python data_pipeline/build_dataset.py --generations data/cache/new_haiku_generations.jsonl.gz --source-instances data/raw/swebench_full_instances.jsonl --instances data/processed/instances_full.jsonl --splits data/processed/splits.json --retained-out data/cache/new_llm_t12_hunks.jsonl --tier3-out data/cache/new_tier3_hunks.jsonl --manifest data/cache/new_dataset_manifest.json
 ```
 
 `ANTHROPIC_API_KEY` is needed for region classification and candidate sampling.

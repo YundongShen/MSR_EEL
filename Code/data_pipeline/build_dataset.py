@@ -87,7 +87,7 @@ def main() -> None:
                         help="Raw generation JSONL file(s); several = independent samples")
     parser.add_argument("--instances", default="data/processed/instances_full.jsonl")
     parser.add_argument("--source-instances", type=Path,
-                        default=Path("data/raw/swebench_full_instances.jsonl.gz"))
+                        default=Path("data/raw/swebench_full_instances.jsonl"))
     parser.add_argument("--splits", default="data/processed/splits.json")
     parser.add_argument("--retained-out", default="data/cache/llm_t12_hunks.jsonl")
     parser.add_argument("--tier3-out", default="data/cache/tier3_hunks.jsonl")

@@ -12,7 +12,7 @@ EEL maps requirements (REQ), failing tests (TEST), unmodified source units (ORIG
 | [`Code/data_pipeline/`](Code/data_pipeline/) | Candidate generation, hunk matching, and dataset construction |
 | [`Code/reproduce/REPRODUCE.md`](Code/reproduce/REPRODUCE.md) | Environment setup and experiment commands |
 | [`Data/eel_dataset/`](Data/eel_dataset/) | Generated candidates and fixed data splits |
-| [`Data/swebench/`](Data/swebench/) | SWE-bench source inputs |
+| [`Data/swebench/`](Data/swebench/) | SWE-bench data preparation |
 | [`Data/Evaluation/`](Data/Evaluation/) | Training logs, evaluation results, and supporting analyses |
 
 ## Dataset and labels

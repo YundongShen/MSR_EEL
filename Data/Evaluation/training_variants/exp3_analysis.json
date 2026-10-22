@@ -1,9 +1,9 @@
 {
   "config": {
     "m1_checkpoint": "checkpoints/m1/best.pt",
-    "m2_checkpoint": "/workspace/eel/checkpoints_submit/m2_new_1cdf6f2/best.pt",
-    "instances": "/workspace/eel/generalization_rebuild/submit_1cdf6f2/instances_test_oldschema.jsonl",
-    "tier3": "/workspace/eel/generalization_rebuild/submit_1cdf6f2/tier3_hunks.jsonl",
+    "m2_checkpoint": "checkpoints/m2/best.pt",
+    "instances": "data/processed/instances_full.jsonl",
+    "tier3": "data/cache/tier3_hunks.jsonl",
     "encoder": "microsoft/unixcoder-base",
     "n_test_instances": 229
   },

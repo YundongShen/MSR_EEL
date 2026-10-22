@@ -165,8 +165,8 @@ The new embeddings will be initialized from a multivariate normal distribution t
 19:36:48 [INFO] step=7750  loss=0.7329  τ=0.067  lr=1.95e-05  [req_test=0.001  orig_hunk=0.009  req_hunk=0.056  req_orig=0.668]
 19:37:58 [INFO] step=7800  loss=0.9742  τ=0.067  lr=1.95e-05  [req_orig=0.814  req_test=0.137  req_hunk=0.003  orig_hunk=0.021]
 19:41:07 [INFO] Epoch 1 — train_loss=0.9576  val_loss=4.7140
-19:41:08 [INFO] Saved checkpoint → /tmp/lso_17762225/ckpt/epoch_001.pt  (val_loss=4.7140)
-19:41:10 [INFO] Saved checkpoint → /tmp/lso_17762225/ckpt/best.pt  (val_loss=4.7140)
+19:41:08 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_001.pt  (val_loss=4.7140)
+19:41:10 [INFO] Saved checkpoint → checkpoints/exp4_lso/best.pt  (val_loss=4.7140)
 19:41:10 [INFO] === Epoch 2 / 10 ===
 19:42:03 [INFO] step=7850  loss=0.5049  τ=0.067  lr=1.95e-05  [req_test=0.192  req_orig=0.083  req_hunk=0.230  orig_hunk=0.000]
 19:43:12 [INFO] step=7900  loss=0.9350  τ=0.067  lr=1.95e-05  [req_orig=0.006  req_test=0.919  orig_hunk=0.003  req_hunk=0.006]
@@ -325,7 +325,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 22:40:48 [INFO] step=15550  loss=0.6069  τ=0.064  lr=1.81e-05  [orig_hunk=0.001  req_orig=0.041  req_test=0.555  req_hunk=0.010]
 22:41:59 [INFO] step=15600  loss=0.2276  τ=0.064  lr=1.81e-05  [req_test=0.218  req_hunk=0.001  orig_hunk=0.001  req_orig=0.008]
 22:45:25 [INFO] Epoch 2 — train_loss=0.5765  val_loss=4.7005
-22:45:26 [INFO] Saved checkpoint → /tmp/lso_17762225/ckpt/epoch_002.pt  (val_loss=4.7005)
+22:45:26 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_002.pt  (val_loss=4.7005)
 18:33:31 [INFO] === Epoch 3 / 10 ===
 18:34:08 [INFO] step=15650  loss=0.3334  τ=0.064  lr=1.81e-05  [req_orig=0.001  req_hunk=0.001  req_test=0.330  orig_hunk=0.001]
 18:35:17 [INFO] step=15700  loss=0.3538  τ=0.064  lr=1.81e-05  [req_hunk=0.004  orig_hunk=0.000  req_orig=0.011  req_test=0.338]
@@ -484,7 +484,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 21:32:14 [INFO] step=23350  loss=0.4326  τ=0.061  lr=1.60e-05  [orig_hunk=0.000  req_hunk=0.004  req_test=0.200  req_orig=0.229]
 21:33:24 [INFO] step=23400  loss=0.0044  τ=0.061  lr=1.59e-05  [req_orig=0.001  req_hunk=0.003  orig_hunk=0.000  req_test=0.001]
 21:37:05 [INFO] Epoch 3 — train_loss=0.4450  val_loss=4.8192
-21:37:07 [INFO] Saved checkpoint → /tmp/lso10_17887903/ckpt/epoch_003.pt  (val_loss=4.8192)
+21:37:07 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_003.pt  (val_loss=4.8192)
 21:37:07 [INFO] === Epoch 4 / 10 ===
 21:37:26 [INFO] step=23450  loss=0.1072  τ=0.061  lr=1.59e-05  [orig_hunk=0.001  req_orig=0.000  req_test=0.000  req_hunk=0.106]
 21:38:35 [INFO] step=23500  loss=0.7301  τ=0.061  lr=1.59e-05  [req_orig=0.141  req_hunk=0.000  req_test=0.586  orig_hunk=0.002]
@@ -643,7 +643,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 00:35:46 [INFO] step=31150  loss=0.0008  τ=0.058  lr=1.32e-05  [req_test=0.000  orig_hunk=0.000  req_hunk=0.000  req_orig=0.000]
 00:36:57 [INFO] step=31200  loss=0.2729  τ=0.058  lr=1.32e-05  [req_hunk=0.000  orig_hunk=0.000  req_test=0.245  req_orig=0.028]
 00:40:56 [INFO] Epoch 4 — train_loss=0.3755  val_loss=4.9462
-00:40:58 [INFO] Saved checkpoint → /tmp/lso10_17887903/ckpt/epoch_004.pt  (val_loss=4.9462)
+00:40:58 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_004.pt  (val_loss=4.9462)
 00:40:58 [INFO] === Epoch 5 / 10 ===
 00:41:01 [INFO] step=31250  loss=0.4111  τ=0.058  lr=1.31e-05  [req_orig=0.001  req_hunk=0.205  req_test=0.189  orig_hunk=0.017]
 00:42:11 [INFO] step=31300  loss=0.7613  τ=0.058  lr=1.31e-05  [orig_hunk=0.008  req_orig=0.569  req_test=0.184  req_hunk=0.000]
@@ -803,7 +803,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 03:40:07 [INFO] step=39000  loss=0.3055  τ=0.058  lr=1.01e-05  [req_hunk=0.000  orig_hunk=0.000  req_test=0.015  req_orig=0.291]
 03:41:15 [INFO] step=39050  loss=0.3899  τ=0.058  lr=1.00e-05  [req_hunk=0.000  req_test=0.376  req_orig=0.006  orig_hunk=0.008]
 03:44:21 [INFO] Epoch 5 — train_loss=0.4857  val_loss=4.8095
-03:44:23 [INFO] Saved checkpoint → /tmp/lso10_17887903/ckpt/epoch_005.pt  (val_loss=4.8095)
+03:44:23 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_005.pt  (val_loss=4.8095)
 03:44:23 [INFO] === Epoch 6 / 10 ===
 03:45:19 [INFO] step=39100  loss=0.3962  τ=0.058  lr=1.00e-05  [req_hunk=0.002  req_test=0.354  req_orig=0.040  orig_hunk=0.000]
 03:46:28 [INFO] step=39150  loss=0.8863  τ=0.058  lr=1.00e-05  [orig_hunk=0.196  req_hunk=0.000  req_orig=0.690  req_test=0.000]
@@ -962,7 +962,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 06:43:30 [INFO] step=46800  loss=0.6518  τ=0.057  lr=6.97e-06  [req_test=0.528  req_orig=0.124  req_hunk=0.000  orig_hunk=0.000]
 06:44:40 [INFO] step=46850  loss=0.8391  τ=0.057  lr=6.95e-06  [req_orig=0.002  req_hunk=0.000  req_test=0.837  orig_hunk=0.000]
 06:48:02 [INFO] Epoch 6 — train_loss=0.4628  val_loss=4.7835
-06:48:03 [INFO] Saved checkpoint → /tmp/lso10_17887903/ckpt/epoch_006.pt  (val_loss=4.7835)
+06:48:03 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_006.pt  (val_loss=4.7835)
 06:48:03 [INFO] === Epoch 7 / 10 ===
 06:48:43 [INFO] step=46900  loss=0.7215  τ=0.057  lr=6.93e-06  [orig_hunk=0.000  req_test=0.488  req_orig=0.233  req_hunk=0.000]
 06:49:54 [INFO] step=46950  loss=0.8948  τ=0.057  lr=6.91e-06  [req_orig=0.009  req_test=0.669  req_hunk=0.217  orig_hunk=0.000]
@@ -1121,7 +1121,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 09:46:54 [INFO] step=54600  loss=0.3935  τ=0.057  lr=4.17e-06  [req_orig=0.147  req_hunk=0.001  req_test=0.246  orig_hunk=0.000]
 09:48:04 [INFO] step=54650  loss=0.1411  τ=0.057  lr=4.15e-06  [orig_hunk=0.019  req_hunk=0.000  req_orig=0.047  req_test=0.075]
 09:51:43 [INFO] Epoch 7 — train_loss=0.4441  val_loss=4.7793
-09:51:44 [INFO] Saved checkpoint → /tmp/lso10_17887903/ckpt/epoch_007.pt  (val_loss=4.7793)
+09:51:44 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_007.pt  (val_loss=4.7793)
 09:51:44 [INFO] === Epoch 8 / 10 ===
 09:52:07 [INFO] step=54700  loss=0.5004  τ=0.057  lr=4.14e-06  [req_test=0.400  req_orig=0.098  orig_hunk=0.000  req_hunk=0.002]
 09:53:16 [INFO] step=54750  loss=0.3062  τ=0.057  lr=4.12e-06  [req_orig=0.024  req_test=0.274  orig_hunk=0.000  req_hunk=0.009]
@@ -1280,7 +1280,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 12:50:39 [INFO] step=62400  loss=0.0477  τ=0.057  lr=1.94e-06  [orig_hunk=0.034  req_orig=0.013  req_hunk=0.000  req_test=0.000]
 12:51:48 [INFO] step=62450  loss=0.3535  τ=0.057  lr=1.93e-06  [req_orig=0.001  req_hunk=0.000  orig_hunk=0.000  req_test=0.353]
 12:55:44 [INFO] Epoch 8 — train_loss=0.4328  val_loss=4.7780
-12:55:46 [INFO] Saved checkpoint → /tmp/lso10_17887903/ckpt/epoch_008.pt  (val_loss=4.7780)
+12:55:46 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_008.pt  (val_loss=4.7780)
 12:55:46 [INFO] === Epoch 9 / 10 ===
 12:55:53 [INFO] step=62500  loss=0.3975  τ=0.057  lr=1.92e-06  [req_test=0.358  req_orig=0.039  req_hunk=0.000  orig_hunk=0.000]
 12:57:02 [INFO] step=62550  loss=0.5073  τ=0.057  lr=1.91e-06  [orig_hunk=0.000  req_orig=0.273  req_test=0.232  req_hunk=0.002]
@@ -1440,7 +1440,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 15:55:44 [INFO] step=70250  loss=0.0467  τ=0.057  lr=4.99e-07  [req_orig=0.001  orig_hunk=0.035  req_hunk=0.007  req_test=0.003]
 15:56:54 [INFO] step=70300  loss=0.5463  τ=0.057  lr=4.93e-07  [req_hunk=0.004  orig_hunk=0.000  req_orig=0.031  req_test=0.511]
 16:00:01 [INFO] Epoch 9 — train_loss=0.4244  val_loss=4.7724
-16:00:03 [INFO] Saved checkpoint → /tmp/lso10_17887903/ckpt/epoch_009.pt  (val_loss=4.7724)
+16:00:03 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_009.pt  (val_loss=4.7724)
 16:00:03 [INFO] === Epoch 10 / 10 ===
 16:01:02 [INFO] step=70350  loss=0.0021  τ=0.057  lr=4.87e-07  [req_orig=0.002  req_hunk=0.000  orig_hunk=0.000  req_test=0.000]
 16:02:12 [INFO] step=70400  loss=0.3245  τ=0.057  lr=4.81e-07  [req_test=0.112  req_orig=0.097  orig_hunk=0.000  req_hunk=0.116]
@@ -1599,7 +1599,7 @@ The new embeddings will be initialized from a multivariate normal distribution t
 19:00:06 [INFO] step=78050  loss=0.1560  τ=0.057  lr=3.98e-11  [req_test=0.152  req_hunk=0.000  orig_hunk=0.004  req_orig=0.001]
 19:01:14 [INFO] step=78100  loss=0.0589  τ=0.057  lr=3.25e-12  [orig_hunk=0.000  req_orig=0.058  req_test=0.001  req_hunk=0.000]
 19:04:36 [INFO] Epoch 10 — train_loss=0.4213  val_loss=4.7748
-19:04:38 [INFO] Saved checkpoint → /tmp/lso10_17887903/ckpt/epoch_010.pt  (val_loss=4.7748)
+19:04:38 [INFO] Saved checkpoint → checkpoints/exp4_lso/epoch_010.pt  (val_loss=4.7748)
 19:04:38 [INFO] Training complete. Best val_loss=4.7005
 Lowest val_loss: epoch 2 val_loss 4.7005
 Lowest train_loss: epoch 4 train_loss 0.3755

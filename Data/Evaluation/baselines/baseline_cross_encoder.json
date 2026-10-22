@@ -1,5 +1,5 @@
 {
-  "model": "/workspace/eel/checkpoints_submit/ce_trained/new_with_cross",
+  "model": "checkpoints/cross_encoder",
   "n_instances": 82,
   "ndcg_k": 0.6909471077416508,
   "t2_recall": 0.6944697737250929,

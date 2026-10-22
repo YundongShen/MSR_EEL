@@ -1,7 +1,7 @@
 device: cuda
 Django instances with retained hunks: 849
 total hunks: 2857  retained: 2530  t3: 327
-loaded checkpoints_submit/m2_new_1cdf6f2/best.pt  epoch: 1  val_loss: 4.640395792810383
+loaded checkpoints/m2/best.pt  epoch: 1  val_loss: 4.640395792810383
 0 / 2857 0s
 300 / 2857 81s
 600 / 2857 316s

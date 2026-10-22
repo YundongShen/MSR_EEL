@@ -7,7 +7,7 @@ Some weights of RobertaForSequenceClassification were not initialized from the m
 21:58:15 [INFO] epoch 1  group 4000/7573  loss 1.0959
 21:59:28 [INFO] epoch 1  group 6000/7573  loss 0.9105
 22:00:39 [INFO] Epoch 1 — train_loss=0.8153  val_loss=0.7000
-22:00:39 [INFO] saved best (epoch 1) → /workspace/eel/checkpoints_submit/ce_trained/new_with_cross
+22:00:39 [INFO] saved best (epoch 1) → checkpoints/cross_encoder
 22:01:53 [INFO] epoch 2  group 2000/7573  loss 0.3358
 22:03:07 [INFO] epoch 2  group 4000/7573  loss 0.3295
 22:04:21 [INFO] epoch 2  group 6000/7573  loss 0.3197

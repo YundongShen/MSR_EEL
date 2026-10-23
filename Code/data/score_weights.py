@@ -1,13 +1,3 @@
-"""Score weights (alpha, beta, gamma) selected on the VALIDATION split.
-
-Paper §III-D: the weights of  s(h) = α·sim(h,q) + β·sim(h,t̄) + γ·sim(h,o(h))  are selected on the
-validation split and held fixed for every reported result.  ``evaluate.py --select-weights`` does the
-selection and writes ``score_weights.json`` next to the checkpoint; every later evaluation of that
-checkpoint reads it (explicit ``--score-*`` flags override it, for the single-view / leave-one-view-out ablations).
-
-The file records which checkpoint it was selected for; using it with another checkpoint is an error.
-"""
-
 from __future__ import annotations
 
 import json

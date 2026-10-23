@@ -854,8 +854,6 @@ def resolve_score_weights(cfg: Config, encoder: EntailmentEncoder, use_projectio
         return "config defaults (untrained M0 backbone)"
     sel = load_selected_weights(cfg.eval.checkpoint_path)
     if sel is None:
-        log.warning("No score_weights.json beside %s: using the config defaults, which were NOT selected on the "
-                    "validation split. Run `evaluate.py --select-weights` first (paper §III-D).", cfg.eval.checkpoint_path)
         return "config defaults, NOT selected on validation"
     if sel.get("checkpoint_identity") != getattr(encoder, "checkpoint_identity", None):
         raise ValueError(f"{cfg.eval.checkpoint_path}: score_weights.json was selected for another checkpoint "

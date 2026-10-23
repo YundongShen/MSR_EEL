@@ -618,7 +618,7 @@ def retrieval_candidates(
         log.info("Building repo-level distractor pool (%s split only) …", split)
         for inst in instances:  # already filtered to the split above
             iid  = inst.get("instance_id", "")
-            repo = iid.split("__")[0]
+            repo = inst["repo"]
             for hunk in retained_hunks(inst, cfg):
                 text = _render_hunk(hunk)
                 if text.strip():
@@ -641,7 +641,7 @@ def retrieval_candidates(
                 candidates.append((text, 3, hunk))
 
         if repo_pool:
-            repo = iid.split("__")[0]
+            repo = inst["repo"]
             pool = [(t, h) for (eid, t, h) in repo_hunk_pool.get(repo, []) if eid != iid]
             if len(pool) > repo_pool_max:
                 pool = rng.sample(pool, repo_pool_max)

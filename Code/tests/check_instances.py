@@ -7,7 +7,9 @@ Run from the project root (no GPU, no model):
 from __future__ import annotations
 
 import difflib
+import subprocess
 import sys
+import tempfile
 import traceback
 from pathlib import Path
 
@@ -141,9 +143,59 @@ def check_real_instances_file() -> None:
     print(f"  real file ok: {n} issues, TEST view empty for {empty}")
 
 
+def check_source_units_from_repository_snapshot() -> None:
+    import json
+    from unittest.mock import patch
+    import download_swebench as ds
+
+    with tempfile.TemporaryDirectory() as tmp:
+        repos = Path(tmp) / "repos"
+        repo = repos / "repo__x-1"
+        repo.mkdir(parents=True)
+        def git(*args):
+            return subprocess.check_output(["git", *args], cwd=repo, stderr=subprocess.DEVNULL).decode().strip()
+
+        git("init", "-q")
+        original = "def original():\n    return 1\n"
+        other = "def other():\n    return '原始'\n"
+        (repo / "main.py").write_text(original)
+        (repo / "other file.py").write_text(other)
+        (repo / "notes.txt").write_text("not Python")
+        (repo / "linked.py").symlink_to("main.py")
+        git("add", ".")
+        git("-c", "user.name=Test", "-c", "user.email=test@example.org", "commit", "-qm", "fixture")
+        commit = git("rev-parse", "HEAD")
+        (repo / "other file.py").write_text("def other():\n    return 99\n")
+        git("add", ".")
+        git("-c", "user.name=Test", "-c", "user.email=test@example.org", "commit", "-qm", "fixture")
+        (repo / "main.py").unlink()
+        (repo / "untracked.py").write_text("def untracked():\n    pass\n")
+        expected = {"main.py": original, "other file.py": other}
+        assert pi.source_files_at_commit(repo, commit) == expected
+
+        inst = _instance([], "", {})
+        inst.update(base_commit=commit, source_files={"main.py": original})
+        parsed = pi.process_instance(inst, repos)
+        assert {u["filepath"]: u["code"] for u in parsed["source_units"]} == {
+            path: code.rstrip("\n") for path, code in expected.items()
+        }
+        inst["patch"] = _diff("other file.py", other, other.replace("原始", "changed"))
+        assert pi.process_instance(inst, repos) == parsed
+        with patch.object(ds, "clone_at_commit", return_value=True):
+            downloaded = ds.process_instance(dict(inst, FAIL_TO_PASS="[]", PASS_TO_PASS="[]"), repos)
+        assert downloaded["source_files"] == expected
+
+        input_path, output_path = Path(tmp) / "raw.jsonl", Path(tmp) / "parsed.jsonl"
+        input_path.write_text(json.dumps(inst) + "\n")
+        subprocess.run([sys.executable, str(ROOT / "data_pipeline/parse_instances.py"),
+                        "--input", str(input_path), "--output", str(output_path),
+                        "--repos-dir", str(repos)], check=True, capture_output=True)
+        assert json.loads(output_path.read_text()) == parsed
+
+
 CHECKS = [check_added_and_modified_tests, check_unappliable_and_missing_base, check_no_test_found_stays_empty,
           check_fallback_from_patch_when_file_missing, check_django_style_ids, check_class_name_as_path,
-          check_real_instances_file]
+          check_source_units_from_repository_snapshot, check_real_instances_file]
 
 if __name__ == "__main__":
     failed = 0

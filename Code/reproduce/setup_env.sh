@@ -108,7 +108,8 @@ subprocess.run([sys.executable, "data_pipeline/download_swebench.py",
 with tempfile.TemporaryDirectory(dir=processed) as tmp:
     parsed = Path(tmp) / "instances.jsonl"
     subprocess.run([sys.executable, "data_pipeline/parse_instances.py",
-                    "--input", str(downloaded), "--output", str(parsed)], check=True)
+                    "--input", str(downloaded), "--output", str(parsed),
+                    "--repos-dir", str(code / "data/repos")], check=True)
     seen, django = set(), 0
     full_path = Path(tmp) / "instances_full.jsonl"
     with parsed.open("rb") as src, full_path.open("wb") as full:

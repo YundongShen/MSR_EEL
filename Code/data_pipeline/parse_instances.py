@@ -1,7 +1,7 @@
 """
 Parse SWE-bench JSONL instances into structured training data for Edit Entailment Learning.
 
-Extracts the REQ / TEST / ORIG entities per instance (all from JSONL, no repo needed):
+Extracts the REQ / TEST / ORIG entities from source records or repository snapshots:
   REQ  - requirement text (problem_statement)
   TEST - fail-to-pass test function bodies, as they are AFTER the reference test patch is applied
          (most fail-to-pass tests are added by the test patch: they do not exist in the base commit)
@@ -22,12 +22,41 @@ from __future__ import annotations
 
 import argparse
 import ast
+import io
 import json
 import re
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+
+def source_files_at_commit(repo_path: Path, commit: str) -> dict[str, str]:
+    tree = subprocess.run(
+        ["git", "ls-tree", "-r", "-z", commit], cwd=repo_path,
+        capture_output=True, check=True,
+    ).stdout
+    entries = []
+    for entry in tree.split(b"\0"):
+        if not entry:
+            continue
+        metadata, path = entry.split(b"\t", 1)
+        mode, kind, oid = metadata.split()
+        if mode in (b"100644", b"100755") and kind == b"blob" and path.endswith(b".py"):
+            entries.append((path.decode("utf-8", errors="surrogateescape"), oid))
+    if not entries:
+        return {}
+    blobs = subprocess.run(
+        ["git", "cat-file", "--batch"], cwd=repo_path,
+        input=b"".join(oid + b"\n" for _, oid in entries), capture_output=True, check=True,
+    ).stdout
+    stream = io.BytesIO(blobs)
+    files = {}
+    for path, _ in entries:
+        _, _, size = stream.readline().split()
+        files[path] = stream.read(int(size)).decode("utf-8", errors="replace")
+        stream.read(1)
+    return files
 
 
 # ---------------------------------------------------------------------------
@@ -229,8 +258,10 @@ def _extract_from_patch(
 # Per-instance processing
 # ---------------------------------------------------------------------------
 
-def process_instance(inst: dict) -> dict:
+def process_instance(inst: dict, repos_dir: Path | None = None) -> dict:
     source_files: dict[str, str] = inst.get("source_files", {})
+    if repos_dir is not None:
+        source_files = source_files_at_commit(repos_dir / inst["instance_id"], inst["base_commit"])
     test_files: dict[str, str] = inst.get("test_files", {})
     fail_to_pass: list[str] = inst.get("fail_to_pass", [])
 
@@ -262,6 +293,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True, help="Input JSONL path")
     parser.add_argument("--output", required=True, help="Output JSONL path")
+    parser.add_argument("--repos-dir", type=Path, help="Repository snapshots for source extraction")
     args = parser.parse_args()
 
     out_path = Path(args.output)
@@ -293,7 +325,7 @@ def main() -> None:
             if iid in done_ids:
                 skipped += 1
                 continue
-            record = process_instance(inst)
+            record = process_instance(inst, args.repos_dir)
             fout.write(json.dumps(record) + "\n")
             fout.flush()
             written += 1

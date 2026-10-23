@@ -31,6 +31,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+if __package__:
+    from .parse_instances import source_files_at_commit
+else:
+    from parse_instances import source_files_at_commit
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
@@ -190,8 +195,6 @@ def process_instance(instance: dict, repos_dir: Path) -> dict | None:
     fail_to_pass: list[str] = json.loads(instance.get("FAIL_TO_PASS", "[]"))
     pass_to_pass: list[str] = json.loads(instance.get("PASS_TO_PASS", "[]"))
 
-    # Collect source files touched by the reference patch.
-    source_paths = files_from_diff(patch)
     # Collect test files from test IDs.
     test_paths = test_files_from_ids(fail_to_pass + pass_to_pass)
     # Also include test files modified by test_patch.
@@ -208,11 +211,7 @@ def process_instance(instance: dict, repos_dir: Path) -> dict | None:
     test_paths += files_from_diff(test_patch)
     test_paths = list(dict.fromkeys(test_paths))
 
-    source_files: dict[str, str] = {}
-    for rel in source_paths:
-        content = read_file_safe(dest / rel)
-        if content is not None:
-            source_files[rel] = content
+    source_files = source_files_at_commit(dest, commit)
 
     test_files: dict[str, str] = {}
     for rel in test_paths:

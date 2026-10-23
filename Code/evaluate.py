@@ -686,8 +686,6 @@ def run_retrieval(
     is scored from the same similarities (used to select the weights on the validation split).  Default:
     the single triple in ``cfg.eval``.  Returns one dict of mean metrics per triple.
     """
-    log.info("=== Retrieval evaluation (%s split) ===", split)
-
     tier_rel = cfg.eval.tier_relevance
     weights = weight_grid or [(cfg.eval.score_alpha, cfg.eval.score_beta, cfg.eval.score_gamma)]
 

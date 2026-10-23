@@ -1,7 +1,6 @@
 00:27:31 [INFO] Device: cuda
 00:27:31 [INFO] use_projection: True
 00:27:34 [INFO] Loaded encoder from checkpoints/m2/best.pt
-00:27:34 [INFO] === Retrieval evaluation ===
 00:27:35 [INFO] Test instances: 557
 00:27:35 [INFO] Tier-3 lookup: 232 instances with scope-creep hunks
 00:27:35 [INFO] Building repo-level distractor pool (test split only) …

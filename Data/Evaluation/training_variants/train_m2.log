@@ -488,7 +488,6 @@ The new embeddings will be initialized from a multivariate normal distribution t
 The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
 20:10:38 [INFO] Encoder parameters: 126,720,768
 20:10:39 [INFO] Resumed from checkpoints/m2/epoch_003.pt  (epoch=3, val_loss=4.6805)
-20:10:39 [INFO] Resume: scheduler advanced to step 23436 (lr=1.592e-05), best val_loss so far 4.6404
 20:10:39 [INFO] Loaded Tier-3 hard negatives: 743 instances (applied to req_hunk + orig_hunk)
 20:10:39 [INFO] === Epoch 4 / 10 ===
 20:11:00 [INFO] step=23450  loss=0.5033  τ=0.062  lr=1.59e-05  [req_test=0.283  req_hunk=0.030  req_orig=0.188  orig_hunk=0.003]

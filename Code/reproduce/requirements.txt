@@ -13,6 +13,8 @@ pyyaml==6.0.3
 rank-bm25==0.2.2
 anthropic==0.100.0
 datasets==3.2.0
+tree-sitter==0.20.4
+tree-sitter-languages==1.10.2
 scikit-learn==1.6.1
 umap-learn==0.5.7
 matplotlib==3.9.4

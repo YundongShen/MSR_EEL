@@ -198,6 +198,15 @@ python evaluate.py --exp retrieval --checkpoint checkpoints/m2/best.pt --instanc
 python evaluate.py --exp retrieval --checkpoint checkpoints/m2/best.pt --instances "$RQ4/swebench_multilingual/instances.jsonl" --llm-t12 "$RQ4/swebench_multilingual/llm_t12_hunks.jsonl" --tier3 "$RQ4/swebench_multilingual/tier3_hunks.jsonl" --all-instances --repo-pool "${W[@]}"
 ```
 
+## Recomputing saved results
+
+Recompute nDCG@k, T1-Recall, T2-Recall, and PSR from the saved per-issue rankings:
+
+```bash
+python reproduce/recompute_metrics.py
+python reproduce/recompute_metrics.py ../Data/Evaluation/baselines --output logs/baseline_metrics.json
+```
+
 ## Candidate sampling and rebuilding
 
 After setup, rebuild the published candidate files from the archived generations

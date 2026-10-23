@@ -73,7 +73,11 @@ Core ranking uses the 82 test issues containing at least one retained hunk and o
 
 We report instance-level macro-averages. nDCG@k uses relevance values 3, 2, 0, and 0 for T1, T2, T3, and T0, with `k = |T1 ∪ T2|`. T1-Recall and T2-Recall measure recovery in the top k and are averaged over issues containing the respective tier. Perfect Separation Rate (PSR) measures whether every retained hunk ranks above every T3 hunk; it excludes T0.
 
-Score ties are broken randomly with seed 42, and all ranking metrics are computed from the resulting order. The `ranked` lists in the per-issue files already preserve this order; use it when recomputing metrics. For PSR, compare rank positions or average the stored `psr` values, rather than requiring strictly higher scores.
+From `Code/`, recompute the four metrics from the saved per-issue rankings:
+
+```bash
+python reproduce/recompute_metrics.py
+```
 
 | Experiment | Records under `Data/Evaluation/` |
 |---|---|

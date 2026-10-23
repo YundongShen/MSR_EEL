@@ -1,5 +1,6 @@
 """
 Parse SWE-bench JSONL instances into structured training data for Edit Entailment Learning.
+Parses Python instances. For multilingual instances, use data_pipeline/parse_generic.py.
 
 Extracts the REQ / TEST / ORIG entities from source records or repository snapshots:
   REQ  - requirement text (problem_statement)

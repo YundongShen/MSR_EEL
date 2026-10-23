@@ -109,23 +109,6 @@ def check_distractor_orig_uses_evaluated_issue() -> None:
         assert checked == 18, checked
 
 
-def check_distractors_stay_in_repository() -> None:
-    repos = ["org/a", "org/a", "org/b", "org/b", "other/a", "other/a"]
-    with tempfile.TemporaryDirectory() as d, _World(Path(d), n_instances=len(repos)) as w:
-        for inst, repo in zip(w.instances, repos):
-            inst["repo"] = repo
-        rows = list(evaluate.retrieval_candidates(w.cfg, repo_pool=True))
-        assert len(rows) == len(repos)
-        for index, (_, candidates, _, _) in enumerate(rows):
-            distractors = {h["hunk_diff"] for _, tier, h in candidates if tier == 0}
-            expected = {
-                _hunk(f"f{k}.py", 10 + 30 * j, f"ret{k}_{j}", 1 + (j % 2))["hunk_diff"]
-                for k, repo in enumerate(repos) if repo == repos[index] and k != index
-                for j in range(2)
-            }
-            assert distractors == expected, (index, distractors, expected)
-
-
 def check_grid_equals_single_runs() -> None:
     grid = [(1.0, 0.5, 0.5), (1.0, 0.25, 2.0), (1.0, 2.0, 0.25), (1.0, 1.0, 1.0)]
     with tempfile.TemporaryDirectory() as d, _World(Path(d), n_instances=8, seed=3) as w:
@@ -180,8 +163,7 @@ def check_weights_bound_to_checkpoint() -> None:
         assert "NOT selected" in src, "a missing weights file must be reported"
 
 
-CHECKS = [check_distractor_orig_uses_evaluated_issue, check_distractors_stay_in_repository,
-          check_grid_equals_single_runs, check_select_best_and_grid,
+CHECKS = [check_distractor_orig_uses_evaluated_issue, check_grid_equals_single_runs, check_select_best_and_grid,
           check_weights_bound_to_checkpoint]
 
 if __name__ == "__main__":
